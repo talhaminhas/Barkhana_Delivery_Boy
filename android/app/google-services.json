@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468235560766",
+    "project_id": "barkhanadeliveryboy",
+    "storage_bucket": "barkhanadeliveryboy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468235560766:android:4b98905a38a9f734676e6f",
+        "android_client_info": {
+          "package_name": "com.panaceasoft.frestdeliveryboy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYBgLOUTI0DaAO7N9NVvL_QiAfRACAzr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
