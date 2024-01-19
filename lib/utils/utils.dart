@@ -184,7 +184,10 @@ class Utils {
       final NumberFormat psFormat = NumberFormat();
     return psFormat.format(double.parse(price));
   }
-
+  /*static String getPriceFormat(String price, PsValueHolder psValueHolder) {
+    final NumberFormat psFormat = NumberFormat(psValueHolder.priceFormat);
+    return psFormat.format(double.parse(price));
+  }*/
   static bool isLightMode(BuildContext context) {
     return Theme.of(context).brightness == Brightness.light;
   }

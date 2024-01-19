@@ -98,11 +98,11 @@ class _PolylinePageState extends State<PolylinePage> {
                     ],
                   ),
                   MarkerLayer(markers: <Marker>[
-                    Marker(
+                    /*Marker(
                       width: 80.0,
                       height: 80.0,
                       point: widget.tranLatLng,
-                      child: /*builder: (BuildContext ctx) =>*/ Container(
+                      child: *//*builder: (BuildContext ctx) =>*//* Container(
                         child: IconButton(
                           icon: Icon(
                             Icons.location_on,
@@ -112,7 +112,7 @@ class _PolylinePageState extends State<PolylinePage> {
                           onPressed: () {},
                         ),
                       ),
-                    )
+                    )*/
                   ])
                 ],
               ),

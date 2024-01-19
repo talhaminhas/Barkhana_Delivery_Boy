@@ -16,17 +16,19 @@ import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/forgot_password_parameter_holder.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constant/route_paths.dart';
+
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({
     Key? key,
     this.animationController,
+    this.goToLoginSelected,
   }) : super(key: key);
   final AnimationController? animationController;
-
+  final Function? goToLoginSelected;
   @override
   _ForgotPasswordViewState createState() => _ForgotPasswordViewState();
 }
-
 class _ForgotPasswordViewState extends State<ForgotPasswordView>
     with SingleTickerProviderStateMixin {
   final TextEditingController userEmailController = TextEditingController();
@@ -57,73 +59,66 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
     repo1 = Provider.of<UserRepository>(context);
     psValueHolder = Provider.of<PsValueHolder?>(context);
 
-    return Stack(children: <Widget>[
-      Container(
-        color: PsColors.mainLightColor,
-        width: double.infinity,
-        height: double.maxFinite,
-      ),
-      CustomScrollView(scrollDirection: Axis.vertical, slivers: <Widget>[
-        SliverToBoxAdapter(
-          child: ChangeNotifierProvider<UserProvider>(
-            lazy: false,
-            create: (BuildContext context) {
-              final UserProvider provider =
-                  UserProvider(repo: repo1!, psValueHolder: psValueHolder);
-              // provider.postUserRegister(userRegisterParameterHolder.toMap());
-              return provider;
-            },
-            child: Consumer<UserProvider>(builder:
-                (BuildContext context, UserProvider provider, Widget? child) {
-              return Stack(
-                children: <Widget>[
-                  SingleChildScrollView(
-                      child: AnimatedBuilder(
-                          animation: animationController!,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              _HeaderIconAndTextWidget(),
-                              _CardWidget(
-                                userEmailController: userEmailController,
-                              ),
-                              const SizedBox(
-                                height: PsDimens.space8,
-                              ),
-                              _SendButtonWidget(
-                                provider: provider,
-                                userEmailController: userEmailController,
-                              ),
-                              const SizedBox(
-                                height: PsDimens.space16,
-                              ),
-                              const _TextWidget(),
-                            ],
+    return SliverToBoxAdapter(
+      child: ChangeNotifierProvider<UserProvider>(
+        lazy: false,
+        create: (BuildContext context) {
+          final UserProvider provider =
+          UserProvider(repo: repo1!, psValueHolder: psValueHolder!);
+          return provider;
+        },
+        child: Consumer<UserProvider>(builder:
+            (BuildContext context, UserProvider provider, Widget? child) {
+          return Stack(
+            children: <Widget>[
+              SingleChildScrollView(
+                  child: AnimatedBuilder(
+                      animation: animationController!,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          //_HeaderIconAndTextWidget(),
+                          Container(
+                            height: PsDimens.space20,
                           ),
-                          builder: (BuildContext context, Widget? child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: Transform(
-                                transform: Matrix4.translationValues(
-                                    0.0, 100 * (1.0 - animation.value), 0.0),
-                          child: child
+                          _CardWidget(
+                            userEmailController: userEmailController,
+                          ),
+                          const SizedBox(
+                            height: PsDimens.space20,
+                          ),
+                          _SendButtonWidget(
+                            provider: provider,
+                            userEmailController: userEmailController,
+                          ),
+                          const SizedBox(
+                            height: PsDimens.space32,
+                          ),
+                          _TextWidget(
+                              goToLoginSelected: widget.goToLoginSelected),
+                        ],
+                      ),
+                      builder: (BuildContext context, Widget? child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: Transform(
+                            transform: Matrix4.translationValues(
+                                0.0, 100 * (1.0 - animation.value), 0.0),
+                            child: child,
                           ),
                         );
-                    })
-                  ),
-                ],
-              );
-            }),
-          ),
-        )
-      ])
-    ]);
+                      }))
+            ],
+          );
+        }),
+      ),
+    );
   }
 }
 
 class _TextWidget extends StatefulWidget {
-  const _TextWidget();
-
+  const _TextWidget({this.goToLoginSelected});
+  final Function? goToLoginSelected;
   @override
   __TextWidgetState createState() => __TextWidgetState();
 }
@@ -136,19 +131,18 @@ class __TextWidgetState extends State<_TextWidget> {
         Utils.getString(context, 'forgot_psw__login'),
         style: Theme.of(context)
             .textTheme
-            .bodyLarge!
+            .bodyMedium!
             .copyWith(color: PsColors.mainColor),
       ),
       onTap: () {
-        // if (widget.goToLoginSelected != null) {
-        //   widget.goToLoginSelected();
-        // } else {
-        //   Navigator.pushReplacementNamed(
-        //     context,
-        //     RoutePaths.login_container,
-        //   );
-        // }
-        Navigator.pop(context);
+        if (widget.goToLoginSelected != null) {
+          widget.goToLoginSelected!();
+        } else {
+          Navigator.pushReplacementNamed(
+            context,
+            RoutePaths.login_container,
+          );
+        }
       },
     );
   }

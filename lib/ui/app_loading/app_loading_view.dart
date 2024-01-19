@@ -28,12 +28,15 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../main.dart';
+
 class AppLoadingView extends StatelessWidget {
   Future<dynamic> loadDeleteHistory(AppInfoProvider provider,
       ClearAllDataProvider clearAllDataProvider, BuildContext context) async {
     String realStartDate = '0';
     String realEndDate = '0';
-
+    PSApp.apiTokenRefresher.context = context;
+    PSApp.apiTokenRefresher.provider = provider;
     if (await Utils.checkInternetConnectivity()) {
       if (provider.psValueHolder == null ||
           provider.psValueHolder!.startDate == null) {

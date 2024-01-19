@@ -3,6 +3,7 @@ import 'package:flutterrtdeliveryboyapp/constant/route_paths.dart';
 import 'package:flutterrtdeliveryboyapp/ui/active_order/active_order_container_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/app_info/app_info_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/app_loading/app_loading_view.dart';
+import 'package:flutterrtdeliveryboyapp/ui/common/ps_message_page.dart';
 import 'package:flutterrtdeliveryboyapp/ui/force_update/force_update_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/gallery/detail/gallery_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/gallery/shop_gallery_grid_view.dart';
@@ -32,6 +33,7 @@ import 'package:flutterrtdeliveryboyapp/viewobject/holder/intent_holder/verify_p
 import 'package:flutterrtdeliveryboyapp/viewobject/noti.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/shop_info.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/transaction_header.dart';
+import 'package:page_transition/page_transition.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -153,6 +155,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               NotiOrderDetailItemListView(
                 intentTransaction: transaction,
               ));
+
+    case '${RoutePaths.messagePage}':
+      final Object? args = settings.arguments;
+      final String message = args as String;
+      return PageTransition<dynamic>(child: MessagePage(message: message,),
+          type: PageTransitionType.fade);
+      /*return PageRouteBuilder<dynamic>(
+          pageBuilder: (_, Animation<double> a1, Animation<double> a2) =>
+              MessagePage(
+               message: message,
+              ));*/
 
     case '${RoutePaths.editProfile}':
       return PageRouteBuilder<dynamic>(

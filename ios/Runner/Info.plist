@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Flutter RT Delivery Boy App</string>
+	<string>Barkhana Delivery Boy</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,7 +45,7 @@
 	<key>FacebookAppID</key>
 	<string>000000000000</string>
 	<key>FacebookDisplayName</key>
-	<string>Flutter RT Delivery Boy App</string>
+	<string>Barkhana Delivery Boy</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>LSApplicationQueriesSchemes</key>

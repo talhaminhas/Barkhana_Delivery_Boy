@@ -80,27 +80,30 @@ class _LoginViewState extends State<LoginView> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      _HeaderIconAndTextWidget(),
+                      //_HeaderIconAndTextWidget(),
+                      Container(
+                        height: PsDimens.space40,
+                      ),
                       _TextFieldAndSignInButtonWidget(
                         provider: provider,
                         text: Utils.getString(context, 'login__submit'),
                         callback: widget.callback,
                       ),
                       _spacingWidget,
-                      _DividerORWidget(),
-                      const SizedBox(
+                      //_DividerORWidget(),
+                      /*const SizedBox(
                         height: PsDimens.space12,
-                      ),
-                      _TermsAndConCheckbox(
+                      ),*/
+                      /*_TermsAndConCheckbox(
                         onCheckBoxClick: () {
                           setState(() {
                             updateCheckBox(context, provider);
                           });
                         },
-                      ),
-                      const SizedBox(
+                      ),*/
+                      /*const SizedBox(
                         height: PsDimens.space8,
-                      ),
+                      ),*/
                       if (PsConfig.showPhoneLogin)
                         _LoginWithPhoneWidget(
                           callback: widget.callback,
@@ -241,12 +244,11 @@ class _TextFieldAndSignInButtonWidget extends StatefulWidget {
 class __CardWidgetState extends State<_TextFieldAndSignInButtonWidget> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  bool _isPasswordHidden = true;
   @override
   Widget build(BuildContext context) {
     // final PsValueHolder psValueHolder =
     //     Provider.of<PsValueHolder>(context, listen: false);
-
     const EdgeInsets _marginEdgeInsetsforCard = EdgeInsets.only(
         left: PsDimens.space16,
         right: PsDimens.space16,
@@ -255,7 +257,7 @@ class __CardWidgetState extends State<_TextFieldAndSignInButtonWidget> {
     return Column(
       children: <Widget>[
         Card(
-          elevation: 0.3,
+          //elevation: 0.3,
           margin: const EdgeInsets.only(
               left: PsDimens.space32, right: PsDimens.space32),
           child: Column(
@@ -281,21 +283,36 @@ class __CardWidgetState extends State<_TextFieldAndSignInButtonWidget> {
               ),
               Container(
                 margin: _marginEdgeInsetsforCard,
-                child: TextField(
+                child: TextFormField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: _isPasswordHidden,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(),
                   decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: Utils.getString(context, 'login__password'),
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: PsColors.textPrimaryLightColor),
-                      icon: Icon(Icons.lock,
-                          color: Theme.of(context).iconTheme.color)),
+                    border: InputBorder.none,
+                    hintText: Utils.getString(context, 'login__password'),
+                    hintStyle: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: PsColors.textPrimaryLightColor),
+                    icon: Icon(
+                      Icons.lock,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isPasswordHidden = !_isPasswordHidden;
+                        });
+                      },
+                      child: Icon(
+                        _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                    ),
+                  ),
                   // keyboardType: TextInputType.number,
                 ),
+
               ),
             ],
           ),
@@ -319,6 +336,7 @@ class __CardWidgetState extends State<_TextFieldAndSignInButtonWidget> {
                     Utils.getString(context, 'warning_dialog__input_password'));
               } else {
                 if (Utils.checkEmailFormat(emailController.text.trim())!) {
+                  print('login called');
                   await widget.provider.loginWithEmailId(
                       context,
                       emailController.text.trim(),
@@ -400,8 +418,8 @@ class __LoginWithPhoneWidgetState extends State<_LoginWithPhoneWidget> {
         titleText: Utils.getString(context, 'login__phone_signin'),
         icon: Icons.phone,
         colorData: widget.provider.isCheckBoxSelect
-            ? PsColors.mainColor
-            : PsColors.mainColor,
+            ? PsColors.greenColor
+            : PsColors.greenColor,
         onPressed: () async {
           if (widget.provider.isCheckBoxSelect) {
             // if (widget.onPhoneSignInSelected != null) {

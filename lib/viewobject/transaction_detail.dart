@@ -30,7 +30,9 @@ class TransactionDetail extends PsObject<TransactionDetail> {
       this.productMeasurement,
       this.shippingCost,
       this.addedDateStr,
-      this.productAttributePrice});
+      this.productAttributePrice,
+      this.productAddonPrice,
+        this.productAddonId,});
   String? id;
   String? transactionsHeaderId;
   String? productId;
@@ -60,7 +62,8 @@ class TransactionDetail extends PsObject<TransactionDetail> {
   String? productMeasurement;
   String? shippingCost;
   String? addedDateStr;
-
+  String? productAddonPrice;
+  String? productAddonId;
   @override
   String? getPrimaryKey() {
     return id;
@@ -98,6 +101,8 @@ class TransactionDetail extends PsObject<TransactionDetail> {
           productUnit: dynamicData['product_unit'],
           productMeasurement: dynamicData['product_measurement'],
           shippingCost: dynamicData['shipping_cost'],
+          productAddonId: dynamicData['product_addon_id'],
+          productAddonPrice: dynamicData['product_addon_price'],
           addedDateStr: dynamicData['added_date_str']);
     // } else {
     //   return null;
@@ -137,6 +142,8 @@ class TransactionDetail extends PsObject<TransactionDetail> {
       data['product_measurement'] = object.productMeasurement;
       data['shipping_cost'] = object.shippingCost;
       data['added_date_str'] = object.addedDateStr;
+      data['product_addon_id'] = object.productAddonId;
+      data['product_addon_price'] = object.productAddonPrice;
       return data;
     } else {
       return null;

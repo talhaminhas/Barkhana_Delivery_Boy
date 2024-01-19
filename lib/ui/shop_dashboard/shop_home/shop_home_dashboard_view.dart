@@ -89,7 +89,7 @@ class _ShopHomeDashboardViewWidgetState
   void initState() {
     super.initState();
 
-    if (Platform.isAndroid) {
+    /*if (Platform.isAndroid) {
       _rateMyApp.init().then((_) {
         if (_rateMyApp.shouldOpenDialog) {
           _rateMyApp.showStarRateDialog(
@@ -160,7 +160,7 @@ class _ShopHomeDashboardViewWidgetState
           );
         }
       });
-    }
+    }*/
   }
 
   Future<void> updateTitle(MainDashboardProvider provider, String title) async {

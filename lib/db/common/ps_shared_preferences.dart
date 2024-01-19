@@ -115,6 +115,8 @@ class PsSharedPreferences {
         shared.getString(PsConst.VALUE_HOLDER__CONTACT_WEBSITE);
     final bool _isToShowIntroSlider =
         shared.getBool(PsConst.VALUE_HOLDER__SHOW_INTRO_SLIDER) ?? true;
+    final String? _priceFormat =
+    shared.getString(PsConst.VALUE_HOLDER__PRICE_FORMAT);
     final PsValueHolder _valueHolder = PsValueHolder(
         loginUserId: _loginUserId,
         loginUserName: _loginUserName,
@@ -153,6 +155,7 @@ class PsSharedPreferences {
         contactPhone: _contactPhone,
         contactEmail: _contactEmail,
         isToShowIntroSlider: _isToShowIntroSlider,
+        priceFormat: _priceFormat,
         contactWebsite: _contactWebsite);
 
     _valueController.add(_valueHolder);

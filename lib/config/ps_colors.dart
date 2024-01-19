@@ -19,6 +19,7 @@ class PsColors {
   static Color mainShadowColor = Colors.black.withOpacity(0.5);
   static Color mainLightShadowColor = Colors.black.withOpacity(0.5);
   static Color mainDividerColor = _d_divider_color;
+  static Color greenColor= Colors.green;
 
 
   ///
@@ -59,6 +60,7 @@ class PsColors {
   ///
   static Color facebookLoginButtonColor= _c_facebook_login_color;
   static Color googleLoginButtonColor= _c_google_login_color;
+  static Color redColor= _red_color;
   static Color appleLoginButtonColor= _c_apple_login_color;
   static Color phoneLoginButtonColor= _c_phone_login_color;
   static Color disabledFacebookLoginButtonColor = _c_grey_color;
@@ -126,6 +128,7 @@ class PsColors {
 
   static const Color _c_facebook_login_color = Color(0xFF2153B2);
   static const Color _c_google_login_color = Color(0xFFFF4D4D);
+  static const Color _red_color = Colors.red;
   static const Color _c_apple_login_color = Color(0xFF111111);
   static const Color _c_phone_login_color = Color(0xFF9F7A2A);
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:fluttericon/octicons_icons.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_resource.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_config.dart';
@@ -17,6 +19,7 @@ import 'package:flutterrtdeliveryboyapp/repository/tansaction_detail_repository.
 import 'package:flutterrtdeliveryboyapp/repository/transaction_header_repository.dart';
 import 'package:flutterrtdeliveryboyapp/repository/transaction_status_repository.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/dialog/warning_dialog_view.dart';
+import 'package:flutterrtdeliveryboyapp/ui/common/ps_message_page.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/ps_ui_widget.dart';
 import 'package:flutterrtdeliveryboyapp/ui/map/polyline_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/noti/detail/noti_view.dart';
@@ -33,8 +36,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:swipeable_button_view/swipeable_button_view.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:slider_button/slider_button.dart';
+import 'package:page_transition/page_transition.dart';
+import '../../../viewobject/transaction_status.dart';
 import 'order_item_view.dart';
 
 class OrderItemListView extends StatefulWidget {
@@ -108,6 +115,17 @@ class _OrderItemListViewState extends State<OrderItemListView>
       //
     });
   }
+  bool isConnectedToInternet = false;
+  bool isSuccessfullyLoaded = true;
+  bool isFinished = false;
+  void checkConnection() {
+    Utils.checkInternetConnectivity().then((bool onValue) {
+      isConnectedToInternet = onValue;
+      if (isConnectedToInternet && PsConfig.showAdMob) {
+        setState(() {});
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -132,8 +150,20 @@ class _OrderItemListViewState extends State<OrderItemListView>
   }
 
   dynamic data;
+  LatLng? _latlng;
+  final double zoom = 15;
+  final MapController mapController = MapController();
   @override
   Widget build(BuildContext context) {
+    _latlng = LatLng(
+        double.parse(
+            widget.intentTransaction.transLat!),
+        double.parse(
+            widget.intentTransaction.transLng!));
+    if (!isConnectedToInternet && PsConfig.showAdMob) {
+      print('loading ads....');
+      checkConnection();
+    }
     Future<bool> _requestPop() {
       animationController!.reverse().then<dynamic>(
         (void data) {
@@ -232,100 +262,178 @@ class _OrderItemListViewState extends State<OrderItemListView>
                 ),
                 elevation: 0,
               ),
-              body: Stack(children: <Widget>[
-                RefreshIndicator(
-                  child: CustomScrollView(
-                      controller: _scrollController,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      slivers: <Widget>[
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: PsDimens.space8, right: PsDimens.space8),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    width: PsDimens.space140,
-                                    height: PsDimens.space140,
-                                    padding:
-                                        const EdgeInsets.all(PsDimens.space8),
-                                    child: InkWell(
-                                      child: whiteCartWidget(
-                                        context,
-                                        Utils.getString(context,
-                                            'transaction_list__total_amount'),
-                                        '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.balanceAmount!)}',
+              body: Column(
+                  children: <Widget>[
+                    Expanded(child:
+                    Stack(children: <Widget>[
+                      RefreshIndicator(
+                        child: CustomScrollView(
+                            controller: _scrollController,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            slivers: <Widget>[
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  height: 50,
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 0, left: 0),
+                                  child: ClipRRect(
+                                    child: Container(
+                                      height: 250,
+                                      child: FlutterMap(
+                                        mapController: mapController,
+                                        options: MapOptions(
+                                          center: _latlng,
+                                          zoom: zoom,
+                                        ),
+                                        children: <Widget>[
+                                          TileLayer(
+                                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                            //tileProvider: CachedNetworkTileProvider(),
+                                          ),
+                                          MarkerLayer(markers: <Marker>[
+                                            Marker(
+                                              width: 80.0,
+                                              height: 80.0,
+                                              point: _latlng!,
+                                              builder: (BuildContext context)
+                                              {
+                                                return Container(
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.location_on,
+                                                      color: PsColors.redColor,
+                                                    ),
+                                                    iconSize: 45,
+                                                    onPressed: () {
+                                                      launchGoogleMaps(_latlng!);
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          ])
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    width: PsDimens.space140,
-                                    height: PsDimens.space140,
-                                    padding:
-                                        const EdgeInsets.all(PsDimens.space8),
-                                    child: InkWell(
-                                      child: whiteCartWidget(
-                                        context,
-                                        Utils.getString(
-                                            context, 'order_detail__payment'),
-                                        '${transaction!.paymentMethod}',
+                              ),
+                              SliverToBoxAdapter(
+                                child: Padding (
+                                    padding: const EdgeInsets.only(left: 0,
+                                        right: 0,bottom: PsDimens.space8),
+                                    child:Container(
+                                      height: 50,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          launchGoogleMaps(_latlng!);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          primary: PsColors.mainColor, // Set your desired button color
+                                          shape: const RoundedRectangleBorder(
+                                            /*borderRadius: BorderRadius.only(bottomRight: Radius.circular(8.0),
+                                                bottomLeft: Radius.circular(8.0)),*/ // Set your desired border radius
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Get Directions',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                       ),
-                                    ),
+                                    )
+                                ),
+                              ),
+                              /*SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: PsDimens.space8, right: PsDimens.space8),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          width: PsDimens.space140,
+                                          height: PsDimens.space140,
+                                          padding:
+                                          const EdgeInsets.all(PsDimens.space8),
+                                          child: InkWell(
+                                            child: whiteCartWidget(
+                                              context,
+                                              Utils.getString(context,
+                                                  'transaction_list__total_amount'),
+                                              '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.balanceAmount!)}',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          width: PsDimens.space140,
+                                          height: PsDimens.space140,
+                                          padding:
+                                          const EdgeInsets.all(PsDimens.space8),
+                                          child: InkWell(
+                                            child: whiteCartWidget(
+                                              context,
+                                              Utils.getString(
+                                                  context, 'order_detail__payment'),
+                                              '${transaction!.paymentMethod}',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Container(
-                            color: PsColors.backgroundColor,
-                            margin: const EdgeInsets.only(
-                                top: PsDimens.space8,
-                                bottom: PsDimens.space16,
-                                left: PsDimens.space16,
-                                right: PsDimens.space16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _ShopInfoWidget(
-                                    shopId:
-                                        widget.intentTransaction.shopId ?? ''),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Container(
-                            color: PsColors.backgroundColor,
-                            margin: const EdgeInsets.only(
-                                top: PsDimens.space8,
-                                bottom: PsDimens.space16,
-                                left: PsDimens.space16,
-                                right: PsDimens.space16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _OrderTextWidget(
-                                    transaction: transaction!,
-                                    transactionStatusProvider:
-                                        transactionStatusProvider!,
-                                    transactionHeaderProvider:
-                                        transactionHeaderProvider!,
-                                    updateTransactionHeader:
-                                        updateTransactionHeader,
-                                    shopInfoProvider: shopInfoProvider!),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
+                              ),*/
+                             /* SliverToBoxAdapter(
+                                child: Container(
+                                  color: PsColors.backgroundColor,
+                                  margin: const EdgeInsets.only(
+                                      top: PsDimens.space8,
+                                      bottom: PsDimens.space16,
+                                      left: PsDimens.space16,
+                                      right: PsDimens.space16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      _ShopInfoWidget(
+                                          shopId:
+                                          widget.intentTransaction.shopId ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              ),*/
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  color: PsColors.backgroundColor,
+                                  margin: const EdgeInsets.only(
+                                      top: PsDimens.space8,
+                                      bottom: PsDimens.space16,
+                                      left: PsDimens.space16,
+                                      right: PsDimens.space16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      _OrderTextWidget(
+                                          transaction: transaction!,
+                                          transactionStatusProvider:
+                                          transactionStatusProvider!,
+                                          transactionHeaderProvider:
+                                          transactionHeaderProvider!,
+                                          updateTransactionHeader:
+                                          updateTransactionHeader,
+                                          shopInfoProvider: shopInfoProvider!),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              /*SliverToBoxAdapter(
                             child: Container(
                                 height: 500,
                                 width: double.infinity,
@@ -336,52 +444,216 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                           widget.intentTransaction.transLat!),
                                       double.parse(
                                           widget.intentTransaction.transLng!)),
-                                ))),
-                        SliverToBoxAdapter(
-                          child: _NoOrderWidget(
-                              transaction: transaction,
-                              valueHolder: valueHolder,
-                              scaffoldKey: scaffoldKey),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              if (provider.transactionDetailList.data != null ||
-                                  provider
-                                      .transactionDetailList.data!.isNotEmpty) {
-                                final int count =
-                                    provider.transactionDetailList.data!.length;
-                                return OrderItemView(
-                                  animationController: animationController!,
-                                  animation: Tween<double>(begin: 0.0, end: 1.0)
-                                      .animate(
-                                    CurvedAnimation(
-                                      parent: animationController!,
-                                      curve: Interval((1 / count) * index, 1.0,
-                                          curve: Curves.fastOutSlowIn),
+                                ))),*/
+                              SliverToBoxAdapter(
+                                child: _NoOrderWidget(
+                                    transaction: transaction!,
+                                    valueHolder: valueHolder!,
+                                    scaffoldKey: scaffoldKey),
+                              ),
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                    if (provider.transactionDetailList.data != null ||
+                                        provider
+                                            .transactionDetailList.data!.isNotEmpty) {
+                                      final int count =
+                                          provider.transactionDetailList.data!.length;
+                                      return OrderItemView(
+                                        animationController: animationController!,
+                                        animation: Tween<double>(begin: 0.0, end: 1.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                            parent: animationController!,
+                                            curve: Interval((1 / count) * index, 1.0,
+                                                curve: Curves.fastOutSlowIn),
+                                          ),
+                                        ),
+                                        transaction: provider
+                                            .transactionDetailList.data![index],
+                                      );
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  childCount:
+                                  provider.transactionDetailList.data!.length,
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                  child:
+                                  Container(
+                                    height: 90,
+                                  )
+                              ),
+                            ]),
+                        onRefresh: () {
+                          return provider.resetTransactionDetailList(transaction!);
+                        },
+                      ),
+                      Positioned(
+                          top: 0, right: 0,left: 0,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
+                                    //.withOpacity(0.6),
+                                /*borderRadius: const BorderRadius.only(topRight: Radius.circular(8),
+                                    topLeft: Radius.circular(8)),*/
+                              ),
+                              //margin: const EdgeInsets.only(top: 8,right: 8,left: 8),
+                              //width: 200.0,
+                              height: 50,
+                              child: Center(
+                                child: Shimmer.fromColors(
+                                  baseColor: Colors.white,
+                                  highlightColor: Colors.red,
+                                  child: Text(
+                                    transaction!.transactionStatus!.title ?? '-',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight:
+                                      FontWeight.bold,
                                     ),
                                   ),
-                                  transaction: provider
-                                      .transactionDetailList.data![index],
-                                );
-                              } else {
-                                return null;
-                              }
-                            },
-                            childCount:
-                                provider.transactionDetailList.data!.length,
+                                ),
+                              )
+                          )
+                      ),
+                      PSProgressIndicator(provider.transactionDetailList.status),
+                      if(int.parse(transaction!.transactionStatus!.ordering!) != 0
+                      && int.parse(transaction!.transactionStatus!.ordering!) != 5)
+                      Positioned(
+                          bottom: 10,right: 20,left: 20,
+                          child: Container(
+                              child:SliderButton(
+                                action: () async{
+                                  //change status to picked up
+                                  String updatedStatusOrdering = '4';
+                                  //change status to delivered
+                                  if(int.parse(transaction!.transactionStatus!.ordering!) == 4)
+                                    updatedStatusOrdering = '5';
+                                  for (TransactionStatus transactionStatus in transactionStatusProvider!
+                                      .transactionStatusList.data!) {
+                                        if (transactionStatus.ordering! == updatedStatusOrdering) {
+                                          final TransStatusUpdateHolder paymentStatusHolder =
+                                          TransStatusUpdateHolder(
+                                            transStatusId: transactionStatus.id,
+                                            transactionsHeaderId: transaction?.id,
+                                          );
+                                          transactionHeaderProvider
+                                              ?.postTransactionStatusUpdate(
+                                              paymentStatusHolder.toMap());
+                                          break;
+                                        }
+                                  }
+                                  if (updatedStatusOrdering == '4')
+                                  {
+                                    await Navigator.pushNamed(context, RoutePaths.messagePage,
+                                        arguments: 'Starting Delivery');
+                                    launchGoogleMaps(_latlng!);
+                                  }
+                                  else
+                                    await Navigator.pushNamed(context, RoutePaths.messagePage,
+                                        arguments: 'Order Delivered');
+                                  _requestPop();
+                                  return true;
+                                },
+                                label: Align(
+                                  alignment: const Alignment(0.3, 0.0),
+                                  child:Text(
+                                    int.parse(transaction!.transactionStatus!.ordering!) < 4 ?
+                                    'Slide To Start Delivery' :
+                                    'Slide To Confirm Delivered',
+                                    style: const TextStyle(
+                                      color: Color(0xff4a4a4a),
+                                      fontWeight: FontWeight.bold, // Set fontWeight to bold
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+
+                                icon: const Center(
+                                    child: Icon(
+                                      Icons.arrow_forward_rounded,
+                                      color: Colors.white,
+                                      size: 30.0,
+                                    )),
+
+                                width: double.infinity,
+                                //radius: 20,
+                                buttonColor: PsColors.greenColor,
+                                backgroundColor: PsColors.greenColor.withOpacity(0.6),
+                                highlightedColor: PsColors.greenColor,
+                                baseColor: PsColors.white,
+                              )
                           ),
+                      ),
+                    ]),
+                    ),
+                    /*Container(
+                      //margin: EdgeInsets.all(20),
+                      *//*decoration: BoxDecoration(
+                        color: PsColors.mainColor,  // Set your desired background color here
+                        borderRadius: BorderRadius.circular(10),  // Optional: Set border radius
+                      ),*//*
+                      child: *//*SwipeableButtonView(
+                        buttonText: 'START DELIVERY',
+                        buttonWidget: Container(
+                          child: const Icon(Icons.arrow_forward_rounded, color: Colors.grey),
                         ),
-                      ]),
-                  onRefresh: () {
-                    return provider.resetTransactionDetailList(transaction!);
-                  },
-                ),
-                PSProgressIndicator(provider.transactionDetailList.status)
-              ]),
+                        activeColor: PsColors.mainColor,
+                        isFinished: isFinished,
+                        onWaitingProcess: () {
+                          for (TransactionStatus transactionStatus in transactionStatusProvider!
+                              .transactionStatusList.data!) {
+                            // Change status to picked up
+                            if (int.parse(transactionStatus.ordering!) == 4) {
+                              final TransStatusUpdateHolder paymentStatusHolder =
+                              TransStatusUpdateHolder(
+                                transStatusId: transactionStatus.id,
+                                transactionsHeaderId: transaction?.id,
+                              );
+                              transactionHeaderProvider
+                                  ?.postTransactionStatusUpdate(paymentStatusHolder.toMap());
+                              break;
+                            }
+                          }
+
+                          Future.delayed(const Duration(seconds: 2), () {
+                            setState(() {
+                              isFinished = true;
+                            });
+                          });
+                        },
+                        onFinish: () async {
+                          await Navigator.pushNamed(context, RoutePaths.messagePage,
+                              arguments: 'Order Picked Up');
+                          setState(() {
+                            isFinished = false; // For reverse ripple effect animation
+                          });
+                        },
+                      )*//*
+
+                    ),*/
+
+
+
+                  ]
+              )
+
             );
           }),
         ));
+  }
+
+  Future<void> launchGoogleMaps(LatLng latlng) async {
+    final String url = 'https://www.google.com/maps/dir/?api=1&destination=${latlng.latitude},${latlng.longitude}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
   }
 }
 
@@ -475,8 +747,8 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
   @override
   Widget build(BuildContext context) {
     const EdgeInsets _paddingEdgeInsetWidget = EdgeInsets.only(
-      left: PsDimens.space16,
-      right: PsDimens.space16,
+      left: PsDimens.space8,
+      right: PsDimens.space8,
       top: PsDimens.space8,
     );
 
@@ -575,29 +847,105 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
     );
 
     if ( widget.transaction.transCode != null)
-      return Column(
-        children: <Widget>[
-          Padding(
+      return
+          Container(
             padding: _paddingEdgeInsetWidget,
-            child: _statusTextWidget,
-          ),
-          const SizedBox(height: PsDimens.space16),
-          const Divider(height: PsDimens.space1),
-          const SizedBox(height: PsDimens.space16),
-          Padding(
-            padding: _paddingEdgeInsetWidget,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: PsColors.mainColor, // Border color
+                width: 2.0,          // Border width
+              ),
+              borderRadius: BorderRadius.circular(10.0), // Rounded corners
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  Utils.getString(context, 'order_list__order_contact'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(fontWeight: FontWeight.normal),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Row(
+                        children: <Widget>[
+                          const SizedBox(
+                            width: PsDimens.space8,
+                          ),
+                          Icon(
+                            Icons.perm_identity_outlined,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                          const SizedBox(
+                            width: PsDimens.space8,
+                          ),
+                          Expanded(
+                            child: Text(
+                                'Customer Details',
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context).textTheme.titleMedium),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
+                const SizedBox(
+                  height: 8,
+                ),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                ),
+                /*const SizedBox(
+                  height: 5,
+                ),*/
+                _TransactionNoTextWidget(
+                  title:
+                  'Name :',
+                  transationInfoText: widget.transaction.contactName!,
+                ),
+                _TransactionNoTextWidget(
+                  title:
+                  'Address :',
+                  transationInfoText: widget.transaction.contactAddress!,
+                ),
+                _TransactionNoTextWidget(
+                  title:
+                  'Phone Number :',
+                  transationInfoText: widget.transaction.contactPhone!,
+                ),
+                Padding (
+                    padding: const EdgeInsets.only(top: 10,bottom: 8),
+                    child:Container(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          try {//
+                            if (await canLaunch('tel://${widget.transaction.contactPhone}')) {
+                              await launch('tel://${widget.transaction.contactPhone}');
+                            } else {
+                              throw 'Could not launch Phone Number';
+                            }
+                          } catch (e) {
+                            print('Error: $e');
+                            // Handle the error appropriately (e.g., show a message to the user)
+                          }
+                        },
+
+                        style: ElevatedButton.styleFrom(
+                          primary: PsColors.mainColor, // Set your desired button color
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
+                          ),
+                        ),
+                        child: const Text(
+                          'Call Customer',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    )
+                ),
+                /*Padding(
                   padding: const EdgeInsets.only(top: PsDimens.space8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -629,13 +977,10 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                       _callPhoneWidget
                     ],
                   ),
-                )
+                )*/
               ],
             ),
-          ),
-          const SizedBox(height: PsDimens.space16),
-        ],
-      );
+          );
     else
       return Container();
   }
@@ -787,7 +1132,6 @@ class _SetupAlertDialoadContainerState
                   Navigator.of(context).pop();
                 } else {
                   await PsProgressDialog.showDialog(context);
-
                   final TransStatusUpdateHolder paymentStatusHolder =
                       TransStatusUpdateHolder(
                           transStatusId: widget.transactionStatusProvider
@@ -822,57 +1166,42 @@ class _NoOrderWidget extends StatelessWidget {
     this.scaffoldKey,
   }) : super(key: key);
 
-  final TransactionHeader? transaction;
-  final PsValueHolder? valueHolder;
+  final TransactionHeader transaction;
+  final PsValueHolder valueHolder;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
-    const Widget _dividerWidget = Divider(height: PsDimens.space2);
-    final Widget _contentCopyIconWidget = IconButton(
-      iconSize: PsDimens.space20,
-      icon: Icon(
-        Icons.content_copy,
-        color: Theme.of(context).iconTheme.color,
-      ),
-      onPressed: () {
-        Clipboard.setData(ClipboardData(text: transaction!.transCode!));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Tooltip(
-            message: Utils.getString(context, 'transaction_detail__copy'),
-            child: Text(
-              Utils.getString(context, 'transaction_detail__copied_data'),
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: PsColors.mainColor,
-                  ),
-            ),
-            showDuration: const Duration(seconds: 5),
-          ),
-        ));
-      },
+    const Widget _dividerWidget = Divider(
+      height: PsDimens.space2,
     );
     return Container(
         color: PsColors.backgroundColor,
+        margin: const EdgeInsets.only(top: PsDimens.space8),
         padding: const EdgeInsets.only(
           left: PsDimens.space12,
           right: PsDimens.space12,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(
-                  left: PsDimens.space12,
-                  right: PsDimens.space4,
-                  top: PsDimens.space4,
-                  bottom: PsDimens.space4),
+                  left: PsDimens.space8,
+                  right: PsDimens.space12,
+                  top: PsDimens.space12,
+                  bottom: PsDimens.space12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Expanded(
                     child: Row(
                       children: <Widget>[
+                        const SizedBox(
+                          width: PsDimens.space8,
+                        ),
                         Icon(
-                          Icons.offline_pin,
+                          Octicons.note,
                           color: Theme.of(context).iconTheme.color,
                         ),
                         const SizedBox(
@@ -880,91 +1209,116 @@ class _NoOrderWidget extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                              '${Utils.getString(context, 'order_list__order_no')} : ${transaction!.transCode}',
+                              Utils.getString(
+                                  context, 'checkout__order_summary'),
                               textAlign: TextAlign.left,
-                              style: Theme.of(context).textTheme.titleSmall),
+                              style: Theme.of(context).textTheme.titleMedium),
                         ),
                       ],
                     ),
                   ),
-                  _contentCopyIconWidget,
                 ],
               ),
             ),
             _dividerWidget,
-            _NoOrderTextWidget(
-              transationInfoText: transaction!.totalItemCount!,
+            _TransactionNoTextWidget(
+              transationInfoText: transaction.totalItemCount!,
               title:
-                  '${Utils.getString(context, 'transaction_detail__total_item_count')} :',
+              '${Utils.getString(context, 'transaction_detail__total_item_count')} :',
             ),
-            _NoOrderTextWidget(
+            _TransactionNoTextWidget(
               transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.totalItemAmount!)}',
+              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.totalItemAmount!)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__total_item_price')} :',
+              '${Utils.getString(context, 'transaction_detail__total_item_price')} :',
             ),
-            _NoOrderTextWidget(
-              transationInfoText: transaction!.discountAmount == '0'
+            _TransactionNoTextWidget(
+              transationInfoText: transaction.discountAmount == '0'
                   ? '-'
-                  : '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.discountAmount!)}',
+                  : '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.discountAmount!)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__discount')} :',
+              '${Utils.getString(context, 'transaction_detail__discount')} :',
             ),
-            _NoOrderTextWidget(
-              transationInfoText: transaction!.cuponDiscountAmount == '0'
+            _TransactionNoTextWidget(
+              transationInfoText: transaction.cuponDiscountAmount == '0'
                   ? '-'
-                  : '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.cuponDiscountAmount!)}',
+                  : '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.cuponDiscountAmount!)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__coupon_discount')} :',
+              '${Utils.getString(context, 'transaction_detail__coupon_discount')} :',
             ),
             const SizedBox(
               height: PsDimens.space12,
             ),
             _dividerWidget,
-            _NoOrderTextWidget(
+            _TransactionNoTextWidget(
               transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.subTotalAmount!)}',
+              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.subTotalAmount!)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__sub_total')} :',
+              '${Utils.getString(context, 'transaction_detail__sub_total')} :',
             ),
-            _NoOrderTextWidget(
+            /*_TransactionNoTextWidget(
               transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.taxAmount!)}',
+                  '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.taxAmount!,valueHolder)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__tax')}(${transaction!.taxPercent} %) :',
-            ),
-            _NoOrderTextWidget(
+                  '${Utils.getString(context, 'transaction_detail__tax')}(${transaction.taxPercent} %) :',
+            ),*/
+            _TransactionNoTextWidget(
               transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.shippingAmount!)}',
+              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.shippingAmount!)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__shipping_cost')} :',
+              '${Utils.getString(context, 'checkout__delivery_cost')} :',
             ),
-            _NoOrderTextWidget(
+            /*_TransactionNoTextWidget(
               transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.calculateShippingTax(transaction!.shippingAmount!, transaction!.shippingTaxPercent!)}',
+                  '${transaction.currencySymbol} ${Utils.calculateShippingTax(transaction.shippingAmount!, transaction.shippingTaxPercent!,valueHolder)}',
               title:
-                  '${Utils.getString(context, 'transaction_detail__shipping_tax')}(${transaction!.shippingTaxPercent} %) :',
-            ),
+                  '${Utils.getString(context, 'transaction_detail__shipping_tax')}(${transaction.shippingTaxPercent} %) :',
+            ),*/
             const SizedBox(
               height: PsDimens.space12,
             ),
-            _dividerWidget,
-            _NoOrderTextWidget(
-              transationInfoText:
-                  '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.balanceAmount!)}',
-              title:
-                  '${Utils.getString(context, 'transaction_detail__total')} :',
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: PsColors.redColor, // Border color
+                  width: 2.0,          // Border width
+                ),
+                borderRadius: BorderRadius.circular(10.0), // Rounded corners
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(PsDimens.space12),
+                child:Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      '${Utils.getString(context, 'transaction_detail__total')} :',
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          fontWeight: FontWeight.normal,
+                          color: PsColors.redColor
+                      ),
+                    ),
+                    Text(
+                      '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.balanceAmount!)}' ,
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          fontWeight: FontWeight.normal,
+                          color: PsColors.redColor
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(
-              height: PsDimens.space16,
-            ),
+            /*const SizedBox(
+              height: PsDimens.space12,
+            ),*/
           ],
         ));
   }
 }
 
-class _NoOrderTextWidget extends StatelessWidget {
-  const _NoOrderTextWidget({
+class _TransactionNoTextWidget extends StatelessWidget {
+  const _TransactionNoTextWidget({
     Key? key,
     required this.transationInfoText,
     this.title,
@@ -988,14 +1342,14 @@ class _NoOrderTextWidget extends StatelessWidget {
             title!,
             style: Theme.of(context)
                 .textTheme
-                .bodyLarge!
+                .bodyMedium!
                 .copyWith(fontWeight: FontWeight.normal),
           ),
           Text(
-            transationInfoText,
+            transationInfoText ,
             style: Theme.of(context)
                 .textTheme
-                .bodyLarge!
+                .bodyMedium!
                 .copyWith(fontWeight: FontWeight.normal),
           )
         ],

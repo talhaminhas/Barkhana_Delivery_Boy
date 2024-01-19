@@ -6,12 +6,14 @@ import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 class PSButtonWidget extends StatefulWidget {
   const PSButtonWidget(
       {this.onPressed,
-      this.titleText = '',
-      this.titleTextAlign = TextAlign.center,
-      this.colorData,
-      this.width,
-      this.gradient,
-      this.hasShadow = false});
+        this.titleText = '',
+        this.titleTextAlign = TextAlign.center,
+        this.colorData,
+        this.width,
+        this.gradient,
+        this.hasShadow = false,
+        this.hasShape = true,
+        this.textColor});
 
   final Function? onPressed;
   final String titleText;
@@ -19,6 +21,8 @@ class PSButtonWidget extends StatefulWidget {
   final double? width;
   final Gradient? gradient;
   final bool hasShadow;
+  final bool hasShape;
+  final Color? textColor;
   final TextAlign titleTextAlign;
 
   @override
@@ -46,10 +50,13 @@ class _PSButtonWidgetState extends State<PSButtonWidget> {
       width: MediaQuery.of(context).size.width,
       height: 40,
       decoration: ShapeDecoration(
-        shape: const BeveledRectangleBorder(
+        shape: /*widget.hasShape ? const BeveledRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(7.0)),
+        ): */RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7.0),
         ),
-        color: _gradient == null ? _color : null,
+        color: PsColors.mainColor,
+        /*_gradient == null ? _color : null,
         gradient: _gradient,
         shadows: <BoxShadow>[
           if (widget.hasShadow)
@@ -60,14 +67,17 @@ class _PSButtonWidgetState extends State<PSButtonWidget> {
                 offset: const Offset(0, 4),
                 blurRadius: 8.0,
                 spreadRadius: 3.0),
-        ],
+        ],*/
       ),
       child: Material(
         color: PsColors.transparent,
         type: MaterialType.card,
         clipBehavior: Clip.antiAlias,
-        shape: const BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(PsDimens.space8))),
+        shape: widget.hasShape ? const BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(PsDimens.space8))):
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(PsDimens.space8),
+        ),
         child: InkWell(
           onTap: widget.onPressed as void Function()?,
           highlightColor: PsColors.mainDarkColor,
@@ -82,7 +92,7 @@ class _PSButtonWidgetState extends State<PSButtonWidget> {
                 style: Theme.of(context)
                     .textTheme
                     .labelLarge!
-                    .copyWith(color: PsColors.white),
+                    .copyWith(color: widget.textColor ?? PsColors.white),
               ),
             ),
           ),
@@ -95,13 +105,13 @@ class _PSButtonWidgetState extends State<PSButtonWidget> {
 class PSButtonWithIconWidget extends StatefulWidget {
   const PSButtonWithIconWidget(
       {this.onPressed,
-      this.titleText = '',
-      this.colorData,
-      this.width,
-      this.gradient,
-      this.icon,
-      this.iconAlignment = MainAxisAlignment.center,
-      this.hasShadow = false});
+        this.titleText = '',
+        this.colorData,
+        this.width,
+        this.gradient,
+        this.icon,
+        this.iconAlignment = MainAxisAlignment.center,
+        this.hasShadow = false});
 
   final Function? onPressed;
   final String titleText;
@@ -137,12 +147,12 @@ class _PSButtonWithIconWidgetState extends State<PSButtonWithIconWidget> {
       width: MediaQuery.of(context).size.width,
       height: 40,
       decoration: ShapeDecoration(
-        shape: const BeveledRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        ),
-        color: _gradient == null ? _color : null,
-        gradient: _gradient,
-        shadows: <BoxShadow>[
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          color: PsColors.mainColor/*_gradient == null ? _color : null,*/
+        //gradient: _gradient,
+        /*shadows: <BoxShadow>[
           if (widget.hasShadow)
             BoxShadow(
                 color: Utils.isLightMode(context)
@@ -151,35 +161,43 @@ class _PSButtonWithIconWidgetState extends State<PSButtonWithIconWidget> {
                 offset: const Offset(0, 4),
                 blurRadius: 8.0,
                 spreadRadius: 3.0),
-        ],
+        ],*/
       ),
       child: Material(
-        color: PsColors.transparent,
+        color: _color,
         type: MaterialType.card,
         clipBehavior: Clip.antiAlias,
-        shape: const BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(PsDimens.space8))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8), // You can adjust the radius as needed
+        ),
         child: InkWell(
           onTap: widget.onPressed as void Function()?,
           highlightColor: PsColors.mainDarkColor,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: widget.iconAlignment,
+          child: Stack(
             children: <Widget>[
-              if (widget.icon != null) Icon(widget.icon, color: PsColors.white),
               if (widget.icon != null)
-                const SizedBox(
-                  width: PsDimens.space8,
+                Positioned(
+                    left: 5, bottom: 8, top: 8,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      child: Icon(widget.icon, color: PsColors.white),
+                    )),
+              Positioned.fill(
+                child: Center(
+                  child: Text(
+                    widget.titleText.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge!
+                        .copyWith(color: PsColors.white),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              Text(
-                widget.titleText.toUpperCase(),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge!
-                    .copyWith(color: PsColors.white),
               ),
             ],
           ),
+
+
         ),
       ),
     );

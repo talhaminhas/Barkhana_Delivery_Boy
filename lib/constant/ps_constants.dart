@@ -75,6 +75,7 @@ class PsConst {
       'USER_EMAIL_TO_VERIFY';
   static const String VALUE_HOLDER__USER_PASSWORD_TO_VERIFY =
       'USER_PASSWORD_TO_VERIFY';
+  static const String VALUE_HOLDER__PRICE_FORMAT = 'VALUE_HOLDER__PRICE_FORMAT';
   static const String VALUE_HOLDER__START_DATE = 'START_DATE';
   static const String VALUE_HOLDER__END_DATE = 'END_DATE';
   static const String VALUE_HOLDER__PAYPAL_ENABLED = 'PAYPAL_ENABLED';

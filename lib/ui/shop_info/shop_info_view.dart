@@ -134,11 +134,11 @@ class __ShopInfoViewWidgetState extends State<_ShopInfoViewWidget> {
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
                   MarkerLayer(markers: <Marker>[
-                    Marker(
+                    /*Marker(
                       width: 80.0,
                       height: 80.0,
                       point: _latlng!,
-                      child: /*builder: (BuildContext ctx)=>*/ Container(
+                      child: *//*builder: (BuildContext ctx)=>*//* Container(
                         child: IconButton(
                           icon: Icon(
                             Icons.location_on,
@@ -148,7 +148,7 @@ class __ShopInfoViewWidgetState extends State<_ShopInfoViewWidget> {
                           onPressed: () {},
                         ),
                       ),
-                    )
+                    )*/
                   ])
                 ],
               ),

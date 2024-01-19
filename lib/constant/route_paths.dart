@@ -40,6 +40,7 @@ class RoutePaths {
   static const String activeOrderList = '/activeOrderList';
   static const String transactionDetail = '/transactionDetail';
   static const String notiTransactionDetail = '/notiTransactionDetail';
+  static const String messagePage = '/messagePage';
   static const String filterProductList = '/filterProductList';
   static const String productDetail = '/ProductDetail';
   static const String productDetailFromBasket = '/productDetailFromBasket';

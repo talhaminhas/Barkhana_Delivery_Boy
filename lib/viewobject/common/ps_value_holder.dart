@@ -40,6 +40,7 @@ class PsValueHolder {
     @required this.contactEmail,
     @required this.isToShowIntroSlider,
     @required this.contactWebsite,
+    required this.priceFormat,
   });
   String? loginUserId;
   String? loginUserName;
@@ -79,6 +80,7 @@ class PsValueHolder {
   String? contactEmail;
   bool? isToShowIntroSlider;
   String? contactWebsite;
+  String? priceFormat;
 
   bool isUserToLogin() {
     return (loginUserId == null || loginUserId == '') && (!isUserToVerfity());

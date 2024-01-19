@@ -82,49 +82,58 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                     widget.updateSelectedIndexWithAnimation(
                         Utils.getString(context, 'app_name'), index);
                   }),
-              const Divider(
-                height: PsDimens.space1,
-              ),
-              ListTile(
-                title: Text(
-                    Utils.getString(context, 'home__menu_drawer_user_info')),
-              ),
-              _DrawerMenuWidget(
-                  icon: Icons.person,
-                  title: Utils.getString(context, 'home__menu_drawer_profile'),
-                  index: PsConst.REQUEST_CODE__MENU_USER_PROFILE_FRAGMENT,
-                  onTap: (String title, int index) {
-                    Navigator.pop(context);
-                    title = (
+              if (provider != null)
+                if (valueHolder.loginUserId != null &&
+                    valueHolder.loginUserId != '' &&
+                    valueHolder.isDeliveryBoy == PsConst.APPROVED_STATUS)
+              Column(
+                children: [
+                  const Divider(
+                    height: PsDimens.space1,
+                  ),
+                  ListTile(
+                    title: Text(
+                        Utils.getString(context, 'home__menu_drawer_user_info')),
+                  ),
+                  _DrawerMenuWidget(
+                      icon: Icons.person,
+                      title: Utils.getString(context, 'home__menu_drawer_profile'),
+                      index: PsConst.REQUEST_CODE__MENU_USER_PROFILE_FRAGMENT,
+                      onTap: (String title, int index) {
+                        Navigator.pop(context);
+                        title = (
                             valueHolder.userIdToVerify == null ||
-                            valueHolder.userIdToVerify == '')
-                        ? Utils.getString(context, 'home__menu_drawer_profile')
-                        : Utils.getString(
+                                valueHolder.userIdToVerify == '')
+                            ? Utils.getString(context, 'home__menu_drawer_profile')
+                            : Utils.getString(
                             context, 'home__bottom_app_bar_verify_email');
 
-                    // Is user to login
-                    if (valueHolder.isUserToLogin()) {
-                      title = 'Login';
-                    }
-                    // Is user to verify
-                    else if (valueHolder.isUserToVerfity()) {
-                      title = 'Verify';
-                    }
-                    // Is user delivery boy status is pending
-                    else if (valueHolder.isDeliveryBoy ==
-                        PsConst.PENDING_STATUS) {
-                      title = 'Pending';
-                    }
-                    // Is user delivery boy status is rejected
-                    else if (valueHolder.isDeliveryBoy ==
-                        PsConst.REJECT_STATUS) {
-                      title = 'Reject';
-                    } else {
-                      title = 'Profile';
-                    }
+                        // Is user to login
+                        if (valueHolder.isUserToLogin()) {
+                          title = 'Login';
+                        }
+                        // Is user to verify
+                        else if (valueHolder.isUserToVerfity()) {
+                          title = 'Verify';
+                        }
+                        // Is user delivery boy status is pending
+                        else if (valueHolder.isDeliveryBoy ==
+                            PsConst.PENDING_STATUS) {
+                          title = 'Pending';
+                        }
+                        // Is user delivery boy status is rejected
+                        else if (valueHolder.isDeliveryBoy ==
+                            PsConst.REJECT_STATUS) {
+                          title = 'Reject';
+                        } else {
+                          title = 'Profile';
+                        }
 
-                    widget.updateSelectedIndexWithAnimation(title, index);
-                  }),
+                        widget.updateSelectedIndexWithAnimation(title, index);
+                      }),
+                ]
+              ),
+
               if (provider != null)
                 if (valueHolder.loginUserId != null &&
                     valueHolder.loginUserId != '' &&
@@ -213,14 +222,14 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
               ListTile(
                 title: Text(Utils.getString(context, 'home__menu_drawer_app')),
               ),
-              _DrawerMenuWidget(
+              /*_DrawerMenuWidget(
                   icon: Icons.g_translate,
                   title: Utils.getString(context, 'home__menu_drawer_language'),
                   index: PsConst.REQUEST_CODE__MENU_LANGUAGE_FRAGMENT,
                   onTap: (String title, int index) {
                     Navigator.pop(context);
                     widget.updateSelectedIndexWithAnimation('', index);
-                  }),
+                  }),*/
               _DrawerMenuWidget(
                   icon: Icons.contacts,
                   title:
@@ -248,7 +257,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                     Navigator.pop(context);
                     widget.updateSelectedIndexWithAnimation(title, index);
                   }),
-              ListTile(
+              /*ListTile(
                 leading: Icon(
                   Icons.share,
                   color: PsColors.mainColorWithWhite,
@@ -269,8 +278,8 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                         );
                       });
                 },
-              ),
-              ListTile(
+              ),*/
+              /*ListTile(
                 leading: Icon(
                   Icons.star_border,
                   color: PsColors.mainColorWithWhite,
@@ -283,7 +292,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                   Navigator.pop(context);
                   Utils.launchURL();
                 },
-              )
+              )*/
             ]);
           },
         ),

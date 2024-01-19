@@ -40,27 +40,28 @@ class ShopInfoProvider extends PsProvider {
 
         if ( shopInfo.data != null) {
          await replaceShopInfoValueHolderData(
-            _shopInfo.data!.overallTaxLabel!,
-            _shopInfo.data!.overallTaxValue!,
-            _shopInfo.data!.shippingTaxLabel!,
-            _shopInfo.data!.shippingTaxValue!,
-            _shopInfo.data!.shippingId!,
-            _shopInfo.data!.id!,
-            _shopInfo.data!.name!,
-            _shopInfo.data!.address1!,
-            _shopInfo.data!.messenger!,
-            _shopInfo.data!.whapsappNo!,
-            _shopInfo.data!.aboutPhone1!,
+            _shopInfo.data!.overallTaxLabel ?? '',
+            _shopInfo.data!.overallTaxValue ?? '',
+            _shopInfo.data!.shippingTaxLabel ?? '',
+            _shopInfo.data!.shippingTaxValue ?? '',
+            _shopInfo.data!.shippingId ?? '',
+            _shopInfo.data!.id ?? '',
+            _shopInfo.data!.name ?? '',
+            _shopInfo.data!.address1 ?? '',
+            _shopInfo.data!.messenger ?? '',
+            _shopInfo.data!.whapsappNo ?? '',
+            _shopInfo.data!.aboutPhone1 ?? '',
           );
 
          await replaceCheckoutEnable(
-              _shopInfo.data!.paypalEnabled!,
-              _shopInfo.data!.stripeEnabled!,
-              _shopInfo.data!.codEmail!,
-              _shopInfo.data!.banktransferEnabled!,
-              _shopInfo.data!.standardShippingEnable!,
-              _shopInfo.data!.zoneShippingEnable!,
-              _shopInfo.data!.noShippingEnable!);
+              _shopInfo.data!.paypalEnabled ?? '',
+              _shopInfo.data!.stripeEnabled ?? '',
+              _shopInfo.data!.codEmail ?? '',
+              _shopInfo.data!.banktransferEnabled ?? '',
+              _shopInfo.data!.standardShippingEnable ?? '',
+              _shopInfo.data!.zoneShippingEnable ?? '',
+              _shopInfo.data!.noShippingEnable ?? '');
+
          await replacePublishKey(_shopInfo.data!.stripePublishableKey!);
 
           notifyListeners();
