@@ -125,28 +125,28 @@ class AppLoadingView extends StatelessWidget {
       } else if (_psAppInfo.status == PsStatus.ERROR) {
             final PsValueHolder valueHolder =
         Provider.of<PsValueHolder>(context, listen: false);
-        if (valueHolder.isToShowIntroSlider == true) {
+        /*if (valueHolder.isToShowIntroSlider == true) {
           Navigator.pushReplacementNamed(context, RoutePaths.introSlider,
               arguments: 0);
-        } else {
+        } else {*/
           Navigator.pushReplacementNamed(
             context,
             RoutePaths.shopDashboard,
           );
-        }
+        //}
       }
     } else {
           final PsValueHolder valueHolder =
         Provider.of<PsValueHolder>(context, listen: false);
-      if (valueHolder.isToShowIntroSlider == true) {
+      /*if (valueHolder.isToShowIntroSlider == true) {
         Navigator.pushReplacementNamed(context, RoutePaths.introSlider,
             arguments: 0);
-      } else {
+      } else {*/
         Navigator.pushReplacementNamed(
           context,
           RoutePaths.shopDashboard,
         );
-      }
+      //}
     }
   }
 
@@ -189,15 +189,15 @@ class AppLoadingView extends StatelessWidget {
       await appInfoProvider.replaceVersionForceUpdateData(false);
       final PsValueHolder valueHolder =
           Provider.of<PsValueHolder>(context, listen: false);
-      if (valueHolder.isToShowIntroSlider == true) {
+      /*if (valueHolder.isToShowIntroSlider == true) {
         Navigator.pushReplacementNamed(context, RoutePaths.introSlider,
             arguments: 0);
-      } else {
+      } else {*/
         Navigator.pushReplacementNamed(
           context,
           RoutePaths.shopDashboard,
         );
-      }
+      //}
     }
   }
 
@@ -223,15 +223,15 @@ class AppLoadingView extends StatelessWidget {
     } else {
       final PsValueHolder valueHolder =
           Provider.of<PsValueHolder>(context, listen: false);
-      if (valueHolder.isToShowIntroSlider == true) {
+     /* if (valueHolder.isToShowIntroSlider == true) {
         Navigator.pushReplacementNamed(context, RoutePaths.introSlider,
             arguments: 0);
-      } else {
+      } else {*/
         Navigator.pushReplacementNamed(
           context,
           RoutePaths.shopDashboard,
         );
-      }
+      //}
     }
   }
 
@@ -255,30 +255,30 @@ class AppLoadingView extends StatelessWidget {
                 onCancelTap: () {
                       final PsValueHolder? valueHolder =
                    Provider.of<PsValueHolder?>(context, listen: false);
-                  if (valueHolder!.isToShowIntroSlider == true) {
+                  /*if (valueHolder!.isToShowIntroSlider == true) {
                     Navigator.pushReplacementNamed(
                         context, RoutePaths.introSlider,
                         arguments: 0);
-                  } else {
+                  } else {*/
                     Navigator.pushReplacementNamed(
                       context,
                       RoutePaths.shopDashboard,
                     );
-                  }
+                  //}
                 },
                 onUpdateTap: () async {
                       final PsValueHolder? valueHolder =
                     Provider.of<PsValueHolder?>(context, listen: false);
-                  if (valueHolder!.isToShowIntroSlider == true) {
+                  /*if (valueHolder!.isToShowIntroSlider == true) {
                     Navigator.pushReplacementNamed(
                         context, RoutePaths.introSlider,
                         arguments: 0);
-                  } else {
+                  } else {*/
                     Navigator.pushReplacementNamed(
                       context,
                       RoutePaths.shopDashboard,
                     );
-                  }
+                  //}
 
                   if (Platform.isIOS) {
                     Utils.launchAppStoreURL(iOSAppId: PsConfig.iOSAppStoreId);

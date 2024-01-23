@@ -15,6 +15,8 @@ import 'package:flutterrtdeliveryboyapp/viewobject/transaction_parameter_holder.
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
+import '../item/pending_order_list_item.dart';
+
 class OrderHistoryListView extends StatefulWidget {
   const OrderHistoryListView(
       {Key? key, required this.animationController, required this.scaffoldKey})
@@ -77,7 +79,10 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
         final CompletedOrderProvider provider =
             CompletedOrderProvider(repo: repo1!);
         completedOrderListHolder =
-            CompletedOrderListHolder(deliveryBoyId: psValueHolder!.loginUserId);
+            CompletedOrderListHolder(
+                deliveryBoyId: psValueHolder!.loginUserId,
+              justToday: '0'
+            );
         provider.loadCompletedOrderList(completedOrderListHolder!.toMap(),
             TransactionParameterHolder().getCompletedOrderParameterHolder());
         _orderHistoryProvider = provider;
@@ -87,67 +92,70 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
           CompletedOrderProvider provider, Widget? child) {
         if (provider.completedTransactionList.data != null) {
           if (provider.completedTransactionList.data!.isNotEmpty) {
-            return Column(
-              children: <Widget>[
-                const PsAdMobBannerWidget(admobSize: AdSize.banner),
-                Expanded(
-                  child: Stack(
-                    children: <Widget>[
-                      RefreshIndicator(
-                        child: CustomScrollView(
-                            controller: _scrollController,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            slivers: <Widget>[
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    final int count = provider
-                                        .completedTransactionList.data!.length;
-                                    return OrderListItem(
-                                      scaffoldKey: widget.scaffoldKey,
-                                      animationController:
+            return Container (
+              margin: const EdgeInsets.only(left: 16,right: 16),
+                child: Column(
+                  children: <Widget>[
+                    //const PsAdMobBannerWidget(admobSize: AdSize.banner),
+                    Expanded(
+                      child: Stack(
+                        children: <Widget>[
+                          RefreshIndicator(
+                            child: CustomScrollView(
+                                controller: _scrollController,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                slivers: <Widget>[
+                                  SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                          (BuildContext context, int index) {
+                                        final int count = provider
+                                            .completedTransactionList.data!.length;
+                                        return DashboardOrderListItem(
+                                          scaffoldKey: widget.scaffoldKey,
+                                          animationController:
                                           widget.animationController,
-                                      animation:
+                                          animation:
                                           Tween<double>(begin: 0.0, end: 1.0)
                                               .animate(
-                                        CurvedAnimation(
-                                          parent: widget.animationController,
-                                          curve: Interval(
-                                              (1 / count) * index, 1.0,
-                                              curve: Curves.fastOutSlowIn),
-                                        ),
-                                      ),
-                                      transaction: provider
-                                          .completedTransactionList.data![index],
-                                      onTap: () {
-                                        Navigator.pushNamed(context,
-                                            RoutePaths.transactionDetail,
-                                            arguments: provider
-                                                .completedTransactionList
-                                                .data![index]);
+                                            CurvedAnimation(
+                                              parent: widget.animationController,
+                                              curve: Interval(
+                                                  (1 / count) * index, 1.0,
+                                                  curve: Curves.fastOutSlowIn),
+                                            ),
+                                          ),
+                                          transaction: provider
+                                              .completedTransactionList.data![index],
+                                          onTap: () {
+                                            Navigator.pushNamed(context,
+                                                RoutePaths.transactionDetail,
+                                                arguments: provider
+                                                    .completedTransactionList
+                                                    .data![index]);
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
-                                  childCount: provider
-                                      .completedTransactionList.data!.length,
-                                ),
-                              ),
-                            ]),
-                        onRefresh: () {
-                          return provider.resetCompletedOrderList(
-                              completedOrderListHolder!.toMap(),
-                              TransactionParameterHolder()
-                                  .getCompletedOrderParameterHolder());
-                        },
+                                      childCount: provider
+                                          .completedTransactionList.data!.length,
+                                    ),
+                                  ),
+                                ]),
+                            onRefresh: () {
+                              return provider.resetCompletedOrderList(
+                                  completedOrderListHolder!.toMap(),
+                                  TransactionParameterHolder()
+                                      .getCompletedOrderParameterHolder());
+                            },
+                          ),
+                          PSProgressIndicator(
+                              provider.completedTransactionList.status)
+                        ],
                       ),
-                      PSProgressIndicator(
-                          provider.completedTransactionList.status)
-                    ],
-                  ),
+                    )
+                  ],
                 )
-              ],
             );
           } else {
             return SingleChildScrollView(

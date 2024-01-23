@@ -10,6 +10,10 @@ analyzer
 2.19
 file:///Users/its/.pub-cache/hosted/pub.dev/analyzer-5.13.0/
 file:///Users/its/.pub-cache/hosted/pub.dev/analyzer-5.13.0/lib/
+animated_check
+2.12
+file:///Users/its/.pub-cache/hosted/pub.dev/animated_check-1.0.5/
+file:///Users/its/.pub-cache/hosted/pub.dev/animated_check-1.0.5/lib/
 args
 2.19
 file:///Users/its/.pub-cache/hosted/pub.dev/args-2.4.2/
@@ -242,6 +246,10 @@ flutter_speed_dial
 2.12
 file:///Users/its/.pub-cache/hosted/pub.dev/flutter_speed_dial-7.0.0/
 file:///Users/its/.pub-cache/hosted/pub.dev/flutter_speed_dial-7.0.0/lib/
+flutter_spinkit
+2.12
+file:///Users/its/.pub-cache/hosted/pub.dev/flutter_spinkit-5.2.0/
+file:///Users/its/.pub-cache/hosted/pub.dev/flutter_spinkit-5.2.0/lib/
 flutter_svg
 2.19
 file:///Users/its/.pub-cache/hosted/pub.dev/flutter_svg-2.0.9/

@@ -133,7 +133,7 @@ class TransactionDetail extends PsObject<TransactionDetail> {
       data['discount_percent'] = object.discountPercent;
       data['added_date'] = object.addedDate;
       data['added_user_id'] = object.addedUserId;
-      data['updated_date'] = object.updatedDate;
+      data['updated_date'] = object.justToday;
       data['updated_user_id'] = object.updatedUserId;
       data['updated_flag'] = object.updatedFlag;
       data['currency_symbol'] = object.currencySymbol;

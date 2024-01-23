@@ -66,7 +66,7 @@ class CustomizedDetail extends PsObject<CustomizedDetail> {
       data['additional_price'] = object.additionalPrice;
       data['added_date'] = object.addedDate;
       data['added_user_id'] = object.addedUserId;
-      data['updated_date'] = object.updatedDate;
+      data['updated_date'] = object.justToday;
       data['updated_user_id'] = object.updatedUserId;
       data['updated_flag'] = object.updatedFlag;
       return data;

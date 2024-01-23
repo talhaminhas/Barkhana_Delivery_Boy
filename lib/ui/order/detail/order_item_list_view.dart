@@ -279,7 +279,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                               ),
                               SliverToBoxAdapter(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 0, left: 0),
+                                  padding: const EdgeInsets.only(right: 0, left: 0, bottom: 10),
                                   child: ClipRRect(
                                     child: Container(
                                       height: 250,
@@ -320,31 +320,6 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Padding (
-                                    padding: const EdgeInsets.only(left: 0,
-                                        right: 0,bottom: PsDimens.space8),
-                                    child:Container(
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          launchGoogleMaps(_latlng!);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: PsColors.mainColor, // Set your desired button color
-                                          shape: const RoundedRectangleBorder(
-                                            /*borderRadius: BorderRadius.only(bottomRight: Radius.circular(8.0),
-                                                bottomLeft: Radius.circular(8.0)),*/ // Set your desired border radius
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Get Directions',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    )
                                 ),
                               ),
                               /*SliverToBoxAdapter(
@@ -504,18 +479,19 @@ class _OrderItemListViewState extends State<OrderItemListView>
                               //width: 200.0,
                               height: 50,
                               child: Center(
-                                child: Shimmer.fromColors(
+                                child: /*Shimmer.fromColors(
                                   baseColor: Colors.white,
                                   highlightColor: Colors.red,
-                                  child: Text(
+                                  child: */Text(
                                     transaction!.transactionStatus!.title ?? '-',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 17,
                                       fontWeight:
                                       FontWeight.bold,
+                                      color: Colors.white
                                     ),
-                                  ),
+                                  //),
                                 ),
                               )
                           )
@@ -524,9 +500,11 @@ class _OrderItemListViewState extends State<OrderItemListView>
                       if(int.parse(transaction!.transactionStatus!.ordering!) != 0
                       && int.parse(transaction!.transactionStatus!.ordering!) != 5)
                       Positioned(
-                          bottom: 10,right: 20,left: 20,
+                          bottom: 0,right: 0,left: 0,
                           child: Container(
                               child:SliderButton(
+                                width: double.infinity,
+                                radius: 0,
                                 action: () async{
                                   //change status to picked up
                                   String updatedStatusOrdering = '4';
@@ -573,18 +551,18 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                   ),
                                 ),
 
-                                icon: const Center(
+                                icon: Center(
                                     child: Icon(
                                       Icons.arrow_forward_rounded,
-                                      color: Colors.white,
+                                      color: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
                                       size: 30.0,
                                     )),
 
-                                width: double.infinity,
+                                //width: double.infinity,
                                 //radius: 20,
-                                buttonColor: PsColors.greenColor,
-                                backgroundColor: PsColors.greenColor.withOpacity(0.6),
-                                highlightedColor: PsColors.greenColor,
+                                buttonColor: PsColors.mainColor,
+                                backgroundColor: PsColors.mainColor.withOpacity(0.6),
+                                highlightedColor: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
                                 baseColor: PsColors.white,
                               )
                           ),
@@ -913,37 +891,76 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                   'Phone Number :',
                   transationInfoText: widget.transaction.contactPhone!,
                 ),
-                Padding (
-                    padding: const EdgeInsets.only(top: 10,bottom: 8),
-                    child:Container(
-                      height: 50,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          try {//
-                            if (await canLaunch('tel://${widget.transaction.contactPhone}')) {
-                              await launch('tel://${widget.transaction.contactPhone}');
-                            } else {
-                              throw 'Could not launch Phone Number';
-                            }
-                          } catch (e) {
-                            print('Error: $e');
-                            // Handle the error appropriately (e.g., show a message to the user)
-                          }
-                        },
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // You can also use MainAxisAlignment.spaceAround
+                  children: <Widget> [
+                    Expanded (
+                      //padding: const EdgeInsets.only(bottom: 10),
+                        child:Container(
+                          height: 60,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          //width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final String url = 'https://www.google.com/maps/dir/?api=1&destination='
+                                  '${widget.transaction.transLat},${widget.transaction.transLng}';
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                print('Could not launch $url');
+                              }
+                            },
 
-                        style: ElevatedButton.styleFrom(
-                          primary: PsColors.mainColor, // Set your desired button color
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
+                            style: ElevatedButton.styleFrom(
+                              primary: PsColors.mainColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
+                              ),
+                            ),
+                            child: const Text(
+                              'Get Directions',
+                              style: TextStyle(fontSize: 18),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'Call Customer',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    )
+                        )
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Padding (
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child:Container(
+                          height: 60,
+                          //width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              try {//
+                                if (await canLaunch('tel://${widget.transaction.contactPhone}')) {
+                                  await launch('tel://${widget.transaction.contactPhone}');
+                                } else {
+                                  throw 'Could not launch Phone Number';
+                                }
+                              } catch (e) {
+                                print('Error: $e');
+                                // Handle the error appropriately (e.g., show a message to the user)
+                              }
+                            },
+
+                            style: ElevatedButton.styleFrom(
+                              primary: PsColors.mainColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
+                              ),
+                            ),
+                            child: const Icon(Icons.phone_in_talk, size: 30,),
+                            //),
+                          ),
+                        )
+                    ),
+                  ],
                 ),
                 /*Padding(
                   padding: const EdgeInsets.only(top: PsDimens.space8),
@@ -1208,12 +1225,14 @@ class _NoOrderWidget extends StatelessWidget {
                           width: PsDimens.space8,
                         ),
                         Expanded(
-                          child: Text(
-                              Utils.getString(
-                                  context, 'checkout__order_summary'),
+                          child: Text('Order No :',
                               textAlign: TextAlign.left,
                               style: Theme.of(context).textTheme.titleMedium),
                         ),
+                        Text(
+                            transaction.transCode!,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.titleMedium),
                       ],
                     ),
                   ),

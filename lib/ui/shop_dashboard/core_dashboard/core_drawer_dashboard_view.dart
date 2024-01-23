@@ -75,7 +75,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
               ),
               _DrawerMenuWidget(
                   icon: Icons.store,
-                  title: Utils.getString(context, 'home__drawer_menu_home'),
+                  title: 'Active Orders',
                   index: PsConst.REQUEST_CODE__MENU_HOME_FRAGMENT,
                   onTap: (String title, int index) {
                     Navigator.pop(context);
@@ -138,7 +138,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                 if (valueHolder.loginUserId != null &&
                     valueHolder.loginUserId != '' &&
                     valueHolder.isDeliveryBoy == PsConst.APPROVED_STATUS)
-                  Visibility(
+                 /* Visibility(
                     visible: true,
                     child: _DrawerMenuWidget(
                         icon: Icons.swap_horizontal_circle,
@@ -149,7 +149,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                           Navigator.pop(context);
                           widget.updateSelectedIndexWithAnimation(title, index);
                         }),
-                  ),
+                  ),*/
               if (provider != null)
                 if (valueHolder.loginUserId != null &&
                     valueHolder.loginUserId != '' &&
@@ -158,8 +158,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                     visible: true,
                     child: _DrawerMenuWidget(
                       icon: Icons.swap_horiz,
-                      title: Utils.getString(
-                          context, 'home__menu_drawer_order_history'),
+                      title: 'Order History',
                       index: PsConst.REQUEST_CODE__MENU_ORDER_HISTORY_FRAGMENT,
                       onTap: (String title, int index) {
                         Navigator.pop(context);

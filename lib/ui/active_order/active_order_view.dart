@@ -77,7 +77,10 @@ class _ActiveOrderListViewState extends State<ActiveOrderListView>
       create: (BuildContext context) {
         final PendingOrderProvider provider = PendingOrderProvider(repo: repo1!);
         completedOrderListHolder =
-            CompletedOrderListHolder(deliveryBoyId: psValueHolder!.loginUserId);
+            CompletedOrderListHolder(
+                deliveryBoyId: psValueHolder!.loginUserId,
+              justToday: '1'
+            );
         provider.loadPendingOrderList(completedOrderListHolder!.toMap(),
             TransactionParameterHolder().getPendingOrderParameterHolder());
         _pendingOrderProvider = provider;
@@ -104,7 +107,7 @@ class _ActiveOrderListViewState extends State<ActiveOrderListView>
                                   (BuildContext context, int index) {
                                     final int count = provider
                                         .pendingTransactionList.data!.length;
-                                    return PendingOrderListItem(
+                                    return DashboardOrderListItem(
                                       scaffoldKey: widget.scaffoldKey,
                                       animationController:
                                           widget.animationController,

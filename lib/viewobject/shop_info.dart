@@ -328,7 +328,7 @@ class ShopInfo extends PsObject<ShopInfo> {
       data['address3'] = object.address3;
       data['touch_count'] = object.touchCount;
       data['added_user_id'] = object.addedUserId;
-      data['updated_date'] = object.updatedDate;
+      data['updated_date'] = object.justToday;
       data['updated_user_id'] = object.updatedUserId;
       data['featured_date'] = object.featuredDate;
       data['messenger'] = object.messenger;

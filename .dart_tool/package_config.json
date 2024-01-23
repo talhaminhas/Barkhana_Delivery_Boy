@@ -20,6 +20,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "animated_check",
+      "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/animated_check-1.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "args",
       "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/args-2.4.2",
       "packageUri": "lib/",
@@ -376,6 +382,12 @@
     {
       "name": "flutter_speed_dial",
       "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/flutter_speed_dial-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_spinkit",
+      "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/flutter_spinkit-5.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1274,7 +1286,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-01-18T11:15:41.615084Z",
+  "generated": "2024-01-19T16:56:13.616741Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }

@@ -25,6 +25,7 @@ import 'package:flutterrtdeliveryboyapp/ui/common/dialog/error_dialog.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/dialog/rating_dialog/core.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/dialog/rating_dialog/style.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/dialog/success_dialog.dart';
+import 'package:flutterrtdeliveryboyapp/ui/common/ps_message_page.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/ps_ui_widget.dart';
 import 'package:flutterrtdeliveryboyapp/ui/map/current_location_view.dart';
 import 'package:flutterrtdeliveryboyapp/ui/order/item/nearest_order_list_item.dart';
@@ -41,6 +42,7 @@ import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/completed_order_list_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/intent_holder/accept_order_parameter_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/pending_order_list_holder.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/transaction_header.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/transaction_parameter_holder.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -58,7 +60,12 @@ class ShopHomeDashboardViewWidget extends StatefulWidget {
 
 class _ShopHomeDashboardViewWidgetState
     extends State<ShopHomeDashboardViewWidget> {
-  PsValueHolder? psValueHolder;
+  int _currentIndex = 0;
+  final List<Widget> _pages = [
+    MessagePage(message: 'page1'),
+    MessagePage(message: 'page2'),
+    MessagePage(message: 'page3'),
+  ];  PsValueHolder? psValueHolder;
   ShopInfoRepository? shopInfoRepository;
 
   NearestOrderProvider ?nearestOrderProvider;
@@ -252,7 +259,9 @@ class _ShopHomeDashboardViewWidgetState
                   completedOrderProvider =
                       CompletedOrderProvider(repo: transactionHeaderRepository!);
                   completedOrderListHolder = CompletedOrderListHolder(
-                      deliveryBoyId: Utils.checkUserLoginId(psValueHolder!));
+                      deliveryBoyId: Utils.checkUserLoginId(psValueHolder!),
+                    justToday: '1',//'${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}',
+                  );
                   completedOrderProvider!.loadCompletedOrderList(
                       completedOrderListHolder!.toMap(),
                       TransactionParameterHolder()
@@ -331,14 +340,14 @@ class _ShopHomeDashboardViewWidgetState
                 physics: const AlwaysScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 slivers: <Widget>[
-                  SliverToBoxAdapter(
+                  /*SliverToBoxAdapter(
                       child: CurrentLocationWidget(
                     androidFusedLocation: true,
                     textEditingController: addressController,
                     isShowAddress: true,
                     shopInfoProvider: shopInfoProvider,
-                  )),
-                  _NearestOrderListWidget(
+                  )),*/
+                  /*_NearestOrderListWidget(
                     animationController: widget.animationController,
                     scaffoldKey: scaffoldKey,
                     pendingOrderListHolder: pendingOrderListHolder,
@@ -349,17 +358,17 @@ class _ShopHomeDashboardViewWidgetState
                     completedOrderProvider: completedOrderProvider,
                     completedOrderListHolder: completedOrderListHolder,
                     orderAcceptProvider: orderAcceptProvider,
-                  ),
+                  ),*/
+                  if(_currentIndex == 0 || _currentIndex == 1)
                   _PendingOrderListWidget(
+                    currentIndex: _currentIndex,
                     provider: pendingOrderProvider,
                     completedOrderProvider: completedOrderProvider,
                     animationController: widget.animationController!,
                     scaffoldKey: scaffoldKey,
                     pendingOrderListHolder: pendingOrderListHolder,
                   ),
-                  _OrderAndSeeAllWidget(
-                      animationController: widget.animationController!,
-                      completedOrderProvider: completedOrderProvider),
+                  if(_currentIndex == 2)
                   _TransactionListViewWidget(
                     scaffoldKey: scaffoldKey,
                     animationController: widget.animationController!,
@@ -370,7 +379,33 @@ class _ShopHomeDashboardViewWidgetState
                 ],
               ),
             ),
-          )),
+          //_pages[_currentIndex],
+          ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+      currentIndex: _currentIndex,
+      selectedItemColor: PsColors.mainColor,
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      items: const <BottomNavigationBarItem>[
+
+        BottomNavigationBarItem(
+          icon: Icon(Icons.library_books_outlined),
+          label: 'Pending',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.directions_bike_sharp),
+          label: 'Delivering',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.library_add_check_outlined),
+          label: 'Completed',
+        ),
+      ],
+    ),
     );
   }
 }
@@ -485,9 +520,12 @@ class __NearestOrderListWidgetState extends State<_NearestOrderListWidget> {
                                         widget.pendingOrderListHolder!.toMap(),
                                         TransactionParameterHolder()
                                             .getPendingOrderParameterHolder());
-
+                                    final CompletedOrderListHolder completedOrderListHolder = CompletedOrderListHolder(
+                                      deliveryBoyId: Utils.checkUserLoginId(psValueHolder!),
+                                      justToday: '1',//'${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}',
+                                    );
                                     widget.completedOrderProvider!.loadCompletedOrderList(
-                                        widget.pendingOrderListHolder!.toMap(),
+                                        completedOrderListHolder.toMap(),
                                         TransactionParameterHolder()
                                             .getCompletedOrderParameterHolder());
                                   }
@@ -574,32 +612,50 @@ class __NearestOrderListWidgetState extends State<_NearestOrderListWidget> {
 
 class _PendingOrderListWidget extends StatelessWidget {
   const _PendingOrderListWidget(
-      {this.provider,
+      {required this.currentIndex,
+        this.provider,
       this.animationController,
       this.scaffoldKey,
       this.pendingOrderListHolder,
       this.completedOrderProvider});
+  final int currentIndex;
   final PendingOrderProvider? provider;
   final AnimationController? animationController;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final PendingOrderListHolder? pendingOrderListHolder;
   final CompletedOrderProvider? completedOrderProvider;
+
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(child: Consumer<PendingOrderProvider>(builder:
-        (BuildContext context, PendingOrderProvider provider, Widget? child) {
+    return SliverToBoxAdapter(
+        child: Consumer<PendingOrderProvider>(builder:
+        (BuildContext context, PendingOrderProvider pendingProvider, Widget? child, ) {
       // animationController.forward();
       final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
           .animate(CurvedAnimation(
               parent: animationController!,
               curve:
                   const Interval(0.5 * 1, 1.0, curve: Curves.fastOutSlowIn)));
-      if (
-          provider.pendingTransactionList.data != null) {
-        if (provider.pendingTransactionList.data!.isEmpty) {
+
+      if (pendingProvider.pendingTransactionList.data != null) {
+        final List<TransactionHeader> pendingTransactions = pendingProvider.pendingTransactionList.data!;
+        final List<TransactionHeader> preparingOrderList =
+        pendingTransactions.where((TransactionHeader transaction) =>
+        transaction.transactionStatus!.ordering == '2').toList();
+        final List<TransactionHeader> readyOrderList =
+        pendingTransactions.where((TransactionHeader transaction) =>
+        transaction.transactionStatus!.ordering == '3').toList();
+        final List<TransactionHeader> deliveringOrderList =
+        pendingTransactions.where((TransactionHeader transaction) =>
+        transaction.transactionStatus!.ordering == '4').toList();
+
+        if ((currentIndex == 0 && readyOrderList.isEmpty && preparingOrderList.isEmpty) ||
+            (currentIndex == 1  && deliveringOrderList.isEmpty)) {
           return AnimatedBuilder(
             animation: animationController!,
-            child: Stack(children: <Widget>[
+            child: Stack(
+              //alignment: Alignment.center,
+                children: <Widget>[
               Container(
                 padding: const EdgeInsets.only(top: PsDimens.space120),
                 child: Column(
@@ -617,7 +673,7 @@ class _PendingOrderListWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      Utils.getString(context, 'order_list__empty_title'),
+                      currentIndex == 0 ?'No Active Orders' : 'Nothing To Deliver',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
                     ),
                     const SizedBox(
@@ -629,7 +685,9 @@ class _PendingOrderListWidget extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                            Utils.getString(context, 'order_list__empty_desc'),
+                          currentIndex == 0 ?
+                            'Currently There Are No Active Orders From The Shop.'
+                            : 'Currently There Are No Orders To Deliver.',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
@@ -639,9 +697,9 @@ class _PendingOrderListWidget extends StatelessWidget {
                     ),
                     Visibility(
                       visible: PsStatus.SUCCESS ==
-                              provider.pendingTransactionList.status ||
+                              pendingProvider.pendingTransactionList.status ||
                           PsStatus.ERROR ==
-                              provider.pendingTransactionList.status,
+                              pendingProvider.pendingTransactionList.status,
                       child: InkWell(
                         child: Container(
                           height: PsDimens.space80,
@@ -660,7 +718,7 @@ class _PendingOrderListWidget extends StatelessWidget {
                               PendingOrderListHolder(
                                   deliveryBoyId:
                                       Utils.checkUserLoginId(psValueHolder!));
-                           provider.resetPendingOrderList(
+                           pendingProvider.resetPendingOrderList(
                               pendingOrderListHolder.toMap(),
                               TransactionParameterHolder()
                                   .getPendingOrderParameterHolder());
@@ -670,7 +728,7 @@ class _PendingOrderListWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              PSProgressIndicator(provider.pendingTransactionList.status),
+              PSProgressIndicator(pendingProvider.pendingTransactionList.status),
             ]),
             builder: (BuildContext context, Widget? child) {
               return FadeTransition(
@@ -682,6 +740,11 @@ class _PendingOrderListWidget extends StatelessWidget {
             },
           );
         } else {
+          pendingProvider.pendingTransactionList.data!.sort((TransactionHeader a, TransactionHeader b) {
+            final int orderingA = int.parse(a.transactionStatus!.ordering!);
+            final int orderingB = int.parse(b.transactionStatus!.ordering!);
+            return orderingB.compareTo(orderingA);
+          });
           return Padding(
             padding: const EdgeInsets.only(
               bottom: PsDimens.space16,
@@ -691,14 +754,16 @@ class _PendingOrderListWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-              Text('Pending Order',
+              Text(currentIndex == 0 ? 'Pending Orders ( '
+                  + (readyOrderList.length + preparingOrderList.length).toString() +' )'
+                  :'Delivering Now ( '+ deliveringOrderList.length.toString() +' )',
                   textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme
-                      .titleSmall!
+                      .titleLarge!
                       .copyWith(color: PsColors.mainColor)),
                Padding(
-                padding: const EdgeInsets.only(top: PsDimens.space8),
+                padding: const EdgeInsets.only(),
               child: Container(
                   child: RefreshIndicator(
                 child: CustomScrollView(
@@ -709,12 +774,25 @@ class _PendingOrderListWidget extends StatelessWidget {
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
-                            if (provider.pendingTransactionList.data != null ||
-                                provider
+                            if (pendingProvider.pendingTransactionList.data != null ||
+                                pendingProvider
                                     .pendingTransactionList.data!.isNotEmpty) {
                               final int count =
-                                  provider.pendingTransactionList.data!.length;
-                              return PendingOrderListItem(
+                                  pendingProvider.pendingTransactionList.data!.length;
+                              bool _showOrderListItem = false;
+                              if ( currentIndex == 0 &&
+                                  (
+                                      pendingProvider.pendingTransactionList.data![index].transactionStatus!.ordering == '2'
+                                          ||  pendingProvider.pendingTransactionList.data![index].transactionStatus!.ordering == '3'
+                                  )
+                                  || currentIndex == 1
+                                      && pendingProvider.pendingTransactionList.data![index].transactionStatus!.ordering == '4')
+                                {
+                                  _showOrderListItem = true;
+                                }
+                              return Visibility(
+                                visible: _showOrderListItem,
+                                  child: DashboardOrderListItem(
                                 scaffoldKey: scaffoldKey!,
                                 animationController: animationController,
                                 animation:
@@ -726,12 +804,12 @@ class _PendingOrderListWidget extends StatelessWidget {
                                   ),
                                 ),
                                 transaction:
-                                    provider.pendingTransactionList.data![index],
+                                    pendingProvider.pendingTransactionList.data![index],
                                 onTap: () async {
                                   final dynamic returnData =
                                       await Navigator.pushNamed(
                                           context, RoutePaths.transactionDetail,
-                                          arguments: provider
+                                          arguments: pendingProvider
                                               .pendingTransactionList
                                               .data![index]);
                                   if (returnData) {
@@ -744,29 +822,36 @@ class _PendingOrderListWidget extends StatelessWidget {
                                             deliveryBoyId:
                                                 Utils.checkUserLoginId(
                                                     psValueHolder!));
-                                    provider.loadPendingOrderList(
+                                    pendingProvider.loadPendingOrderList(
                                         pendingOrderListHolder.toMap(),
                                         TransactionParameterHolder()
                                             .getPendingOrderParameterHolder());
-                                    //
+                                    final CompletedOrderListHolder
+                                    completedOrderListHolder =
+                                    CompletedOrderListHolder(
+                                      justToday: '1',
+                                        deliveryBoyId:
+                                        Utils.checkUserLoginId(
+                                            psValueHolder!));
                                     completedOrderProvider!.loadCompletedOrderList(
-                                        pendingOrderListHolder.toMap(),
+                                        completedOrderListHolder.toMap(),
                                         TransactionParameterHolder()
                                             .getCompletedOrderParameterHolder());
                                   }
                                 },
+                              )
                               );
                             } else {
                               return null;
                             }
                           },
                           childCount:
-                              provider.pendingTransactionList.data!.length,
+                              pendingProvider.pendingTransactionList.data!.length,
                         ),
                       ),
                     ]),
                 onRefresh: () {
-                  return provider.resetPendingOrderList(
+                  return pendingProvider.resetPendingOrderList(
                       pendingOrderListHolder!.toMap(),
                       TransactionParameterHolder()
                           .getPendingOrderParameterHolder());
@@ -883,13 +968,111 @@ class _TransactionListViewWidget extends StatelessWidget {
   final PendingOrderProvider? pendingOrderProvider;
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(child: Consumer<CompletedOrderProvider>(builder:
+    return SliverToBoxAdapter(
+        child: Consumer<CompletedOrderProvider>(builder:
         (BuildContext context, CompletedOrderProvider provider, Widget? child) {
-      if (
-          provider.completedTransactionList.data != null) {
+          final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
+              .animate(CurvedAnimation(
+              parent: animationController!,
+              curve:
+              const Interval(0.5 * 1, 1.0, curve: Curves.fastOutSlowIn)));
+          if (provider.completedTransactionList.data! == null ||
+              provider.completedTransactionList.data!.isEmpty) {
+            return AnimatedBuilder(
+              animation: animationController!,
+              child: Stack(
+                  //alignment: Alignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.only(top: PsDimens.space120),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              'assets/images/empty_active_delivery.png',
+                              height: 100,
+                              width: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(
+                            'No Delivered Orders',
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+                          ),
+                          const SizedBox(
+                            height: PsDimens.space8,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                PsDimens.space72, 0, PsDimens.space72, 0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                  'Currently There Are No Delivered Orders For Today.',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(),
+                                  textAlign: TextAlign.center),
+                            ),
+                          ),
+                          Visibility(
+                            visible: PsStatus.SUCCESS ==
+                                provider.completedTransactionList.status ||
+                                PsStatus.ERROR ==
+                                    provider.completedTransactionList.status,
+                            child: InkWell(
+                              child: Container(
+                                height: PsDimens.space80,
+                                width: PsDimens.space80,
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: PsColors.mainColor,
+                                  size: PsDimens.space40,
+                                ),
+                              ),
+                              onTap: () {
+                                final PsValueHolder? psValueHolder =
+                                Provider.of<PsValueHolder?>(context,
+                                    listen: false);
+                                final CompletedOrderListHolder completedOrderListHolder =
+                                CompletedOrderListHolder(
+                                    deliveryBoyId:
+                                    Utils.checkUserLoginId(psValueHolder!),
+                                  justToday: '1',//'${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}',
+                                );
+                                provider.resetCompletedOrderList(
+                                    completedOrderListHolder.toMap(),
+                                    TransactionParameterHolder()
+                                        .getCompletedOrderParameterHolder());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PSProgressIndicator(provider.completedTransactionList.status),
+                  ]),
+              builder: (BuildContext context, Widget? child) {
+                return FadeTransition(
+                    opacity: animation,
+                    child: Transform(
+                        transform: Matrix4.translationValues(
+                            0.0, 100 * (1.0 - animation.value), 0.0),
+                        child: child));
+              },
+            );
+          }
+          else {
         return Padding(
-          padding: const EdgeInsets.only(bottom: PsDimens.space44),
+          padding: const EdgeInsets.only(right: PsDimens.space16,
+              left: PsDimens.space16),
           child: Stack(children: <Widget>[
+
             Container(
                 child: RefreshIndicator(
               child: CustomScrollView(
@@ -897,6 +1080,11 @@ class _TransactionListViewWidget extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   slivers: <Widget>[
+                    SliverToBoxAdapter(
+                      child: Container(
+                        height: 25,
+                      ),
+                    ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -905,7 +1093,7 @@ class _TransactionListViewWidget extends StatelessWidget {
                                   .completedTransactionList.data!.isNotEmpty) {
                             final int count =
                                 provider.completedTransactionList.data!.length;
-                            return OrderListItem(
+                            return DashboardOrderListItem(
                               scaffoldKey: scaffoldKey,
                               animationController: animationController,
                               animation:
@@ -932,6 +1120,7 @@ class _TransactionListViewWidget extends StatelessWidget {
                                   final CompletedOrderListHolder
                                       completedOrderListHolder =
                                       CompletedOrderListHolder(
+                                          justToday: '1',//'${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}',
                                           deliveryBoyId: Utils.checkUserLoginId(
                                               psValueHolder!));
                                   provider.loadCompletedOrderList(
@@ -962,10 +1151,24 @@ class _TransactionListViewWidget extends StatelessWidget {
                         .getCompletedOrderParameterHolder());
               },
             )),
+            Positioned(
+              top: 0, left: 0, right: 0,
+              child: Row
+                (
+                children: <Widget>[
+                  Text(
+                      'Completed Orders ( ' +provider.completedTransactionList.data!.length.toString() +' )',
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: PsColors.mainColor)),
+
+                ],
+              )
+            ),
           ]),
         );
-      } else {
-        return Container();
       }
     }));
   }
