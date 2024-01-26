@@ -391,9 +391,8 @@ class _ShopHomeDashboardViewWidgetState
         });
       },
       items: const <BottomNavigationBarItem>[
-
         BottomNavigationBarItem(
-          icon: Icon(Icons.library_books_outlined),
+          icon:  Icon(Icons.library_books_outlined),
           label: 'Pending',
         ),
         BottomNavigationBarItem(
@@ -1020,6 +1019,19 @@ class _TransactionListViewWidget extends StatelessWidget {
                                   textAlign: TextAlign.center),
                             ),
                           ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, RoutePaths.completedTransactionList);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: PsColors.mainColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+
+                              ),
+                            ),
+                            child: const Text('Order History'),
+                          ),
                           Visibility(
                             visible: PsStatus.SUCCESS ==
                                 provider.completedTransactionList.status ||
@@ -1052,6 +1064,7 @@ class _TransactionListViewWidget extends StatelessWidget {
                               },
                             ),
                           ),
+
                         ],
                       ),
                     ),
@@ -1082,7 +1095,7 @@ class _TransactionListViewWidget extends StatelessWidget {
                   slivers: <Widget>[
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 25,
+                        height: 45,
                       ),
                     ),
                     SliverList(
@@ -1163,6 +1176,20 @@ class _TransactionListViewWidget extends StatelessWidget {
                           .textTheme
                           .titleLarge!
                           .copyWith(color: PsColors.mainColor)),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutePaths.completedTransactionList);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: PsColors.mainColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+
+                      ),
+                    ),
+                    child: const Text('Order History'),
+                  ),
 
                 ],
               )

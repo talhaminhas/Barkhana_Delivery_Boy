@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_constants.dart';
@@ -11,10 +12,12 @@ import 'package:flutterrtdeliveryboyapp/ui/order/item/order_list_item.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/completed_order_list_holder.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/transaction_header.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/transaction_parameter_holder.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
+import '../../shop_dashboard/core_dashboard/core_appbar_dashboard_view.dart';
 import '../item/pending_order_list_item.dart';
 
 class OrderHistoryListView extends StatefulWidget {
@@ -72,7 +75,7 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
     repo1 = Provider.of<TransactionHeaderRepository>(context);
     psValueHolder = Provider.of<PsValueHolder?>(context);
     print(
-        '............................Build UI Again ............................');
+        '............................Build UI Again Order History View ............................');
     return ChangeNotifierProvider<CompletedOrderProvider>(
       lazy: false,
       create: (BuildContext context) {
@@ -92,6 +95,7 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
           CompletedOrderProvider provider, Widget? child) {
         if (provider.completedTransactionList.data != null) {
           if (provider.completedTransactionList.data!.isNotEmpty) {
+            DateTime? lastProcessedDay;
             return Container (
               margin: const EdgeInsets.only(left: 16,right: 16),
                 child: Column(
@@ -102,51 +106,84 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
                         children: <Widget>[
                           RefreshIndicator(
                             child: CustomScrollView(
-                                controller: _scrollController,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                slivers: <Widget>[
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                          (BuildContext context, int index) {
-                                        final int count = provider
-                                            .completedTransactionList.data!.length;
-                                        return DashboardOrderListItem(
-                                          scaffoldKey: widget.scaffoldKey,
-                                          animationController:
-                                          widget.animationController,
-                                          animation:
-                                          Tween<double>(begin: 0.0, end: 1.0)
-                                              .animate(
-                                            CurvedAnimation(
-                                              parent: widget.animationController,
-                                              curve: Interval(
-                                                  (1 / count) * index, 1.0,
-                                                  curve: Curves.fastOutSlowIn),
+                              controller: _scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              slivers: <Widget>[
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                      final int count =
+                                          provider.completedTransactionList.data!.length;
+                                      final TransactionHeader transaction =
+                                      provider.completedTransactionList.data![index];
+
+                                      // Get the day from the transaction
+                                      final DateTime transactionDay = DateTime.parse(transaction.updatedDate!);
+
+                                      // Check if the day has changed since the last processed transaction
+                                      final bool isDayChanged = lastProcessedDay == null ||
+                                          lastProcessedDay!.day != transactionDay.day ||
+                                          lastProcessedDay!.month != transactionDay.month ||
+                                          lastProcessedDay!.year != transactionDay.year;
+
+                                      // Update lastProcessedDay with the current transaction day
+                                      lastProcessedDay = transactionDay;
+
+                                      // Return a widget based on whether the day has changed
+                                      return Column(
+                                        children: <Widget>[
+                                          if (isDayChanged)
+                                            Container(
+
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20.0),
+                                                color: PsColors.mainColor,
+                                              ),
+                                              child: Text(
+                                                DateFormat('dd-MM-yyyy').format(transactionDay),
+                                                style: const TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          transaction: provider
-                                              .completedTransactionList.data![index],
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
+                                          DashboardOrderListItem(
+                                            scaffoldKey: widget.scaffoldKey,
+                                            animationController: widget.animationController,
+                                            animation: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                              CurvedAnimation(
+                                                parent: widget.animationController,
+                                                curve: Interval(
+                                                    (1 / count) * index, 1.0,
+                                                    curve: Curves.fastOutSlowIn),
+                                              ),
+                                            ),
+                                            transaction: transaction,
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
                                                 RoutePaths.transactionDetail,
-                                                arguments: provider
-                                                    .completedTransactionList
-                                                    .data![index]);
-                                          },
-                                        );
-                                      },
-                                      childCount: provider
-                                          .completedTransactionList.data!.length,
-                                    ),
+                                                arguments: transaction,
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                    childCount: provider.completedTransactionList.data!.length,
                                   ),
-                                ]),
+                                ),
+                              ],
+                            ),
                             onRefresh: () {
                               return provider.resetCompletedOrderList(
-                                  completedOrderListHolder!.toMap(),
-                                  TransactionParameterHolder()
-                                      .getCompletedOrderParameterHolder());
+                                completedOrderListHolder!.toMap(),
+                                TransactionParameterHolder()
+                                    .getCompletedOrderParameterHolder(),
+                              );
                             },
                           ),
                           PSProgressIndicator(

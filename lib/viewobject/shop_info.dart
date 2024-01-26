@@ -68,7 +68,7 @@ class ShopInfo extends PsObject<ShopInfo> {
       this.address2,
       this.address3,
       this.addedUserId,
-      this.updatedDate,
+      //this.updatedDate,
       this.updatedUserId,
       this.featuredDate,
       this.messenger,
@@ -149,7 +149,7 @@ class ShopInfo extends PsObject<ShopInfo> {
   String? address3;
   String? touchCount;
   String? addedUserId;
-  String? updatedDate;
+  //String? updatedDate;
   String? updatedUserId;
   String? featuredDate;
   String? messenger;
@@ -239,7 +239,7 @@ class ShopInfo extends PsObject<ShopInfo> {
         address3: dynamicData['address3'],
         touchCount: dynamicData['touch_count'],
         addedUserId: dynamicData['added_user_id'],
-        updatedDate: dynamicData['updated_date'],
+        //updatedDate: dynamicData['updated_date'],
         updatedUserId: dynamicData['updated_user_id'],
         featuredDate: dynamicData['featured_date'],
         messenger: dynamicData['messenger'],
@@ -328,7 +328,7 @@ class ShopInfo extends PsObject<ShopInfo> {
       data['address3'] = object.address3;
       data['touch_count'] = object.touchCount;
       data['added_user_id'] = object.addedUserId;
-      data['updated_date'] = object.justToday;
+      //data['updated_date'] = object.updateDate;
       data['updated_user_id'] = object.updatedUserId;
       data['featured_date'] = object.featuredDate;
       data['messenger'] = object.messenger;

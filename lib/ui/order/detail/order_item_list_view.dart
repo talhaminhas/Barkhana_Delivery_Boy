@@ -273,11 +273,6 @@ class _OrderItemListViewState extends State<OrderItemListView>
                             shrinkWrap: true,
                             slivers: <Widget>[
                               SliverToBoxAdapter(
-                                child: Container(
-                                  height: 50,
-                                ),
-                              ),
-                              SliverToBoxAdapter(
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 0, left: 0, bottom: 10),
                                   child: ClipRRect(
@@ -467,34 +462,31 @@ class _OrderItemListViewState extends State<OrderItemListView>
                         },
                       ),
                       Positioned(
-                          top: 0, right: 0,left: 0,
-                          child: Container(
+                        top: 10,
+                        left: 0,
+                        right: 0,
+                        child:Align(
+                            alignment: Alignment.center,
+                            child:
+                            Container(
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 color: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
-                                    //.withOpacity(0.6),
-                                /*borderRadius: const BorderRadius.only(topRight: Radius.circular(8),
-                                    topLeft: Radius.circular(8)),*/
+                                //.withOpacity(0.6),
+                                borderRadius: const BorderRadius.all(Radius.circular(25)),
                               ),
-                              //margin: const EdgeInsets.only(top: 8,right: 8,left: 8),
-                              //width: 200.0,
-                              height: 50,
-                              child: Center(
-                                child: /*Shimmer.fromColors(
-                                  baseColor: Colors.white,
-                                  highlightColor: Colors.red,
-                                  child: */Text(
-                                    transaction!.transactionStatus!.title ?? '-',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight:
-                                      FontWeight.bold,
-                                      color: Colors.white
-                                    ),
-                                  //),
+                              child: Text(
+                                transaction!.transactionStatus!.title ?? '-',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                    color: Colors.white
                                 ),
-                              )
-                          )
+                              ),
+                            )
+                        ),
                       ),
                       PSProgressIndicator(provider.transactionDetailList.status),
                       if(int.parse(transaction!.transactionStatus!.ordering!) != 0

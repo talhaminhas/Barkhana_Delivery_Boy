@@ -37,7 +37,7 @@ class DashboardOrderListItem extends StatelessWidget {
             onTap: onTap as void Function()?,
             child: Container(
               color: PsColors.backgroundColor,
-              margin: const EdgeInsets.only(top: PsDimens.space8),
+              margin: const EdgeInsets.only(bottom: PsDimens.space8, top: PsDimens.space8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -392,7 +392,7 @@ class _TransactionTextWidget extends StatelessWidget {
                 title: transaction.transactionStatus!.ordering == '2' ? 'Preparation Started :'
                   : transaction.transactionStatus!.ordering == '3' ? 'Ready Since :'
                     : transaction.transactionStatus!.ordering == '4' ? 'Delivery Started :'
-                : 'Delivered On :',
+                : 'Delivery Time :',
                 transationInfoText: DateFormat('hh:mm a').format(addedDate),
               ),
               _TransactionNoTextWidget(

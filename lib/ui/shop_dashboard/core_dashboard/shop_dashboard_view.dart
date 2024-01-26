@@ -78,6 +78,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
   UserProvider? userProvider;
   DeleteTaskProvider? deleteTaskProvider;
   MainDashboardProvider? mainDashboardProvider;
+  String? _appBarTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +105,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
             updateSelectedIndexWithAnimation: updateSelectedIndexWithAnimation,
             mainDashboardProvider: mainDashboardProvider),
         appBar: CoreAppBarDashboardView(
-            appBarTitle: Utils.getString(context, 'app_name')),
+            appBarTitle: _appBarTitle ?? Utils.getString(context, 'app_name')),
         body: MultiProvider(
           providers: <SingleChildWidget>[
             ChangeNotifierProvider<MainDashboardProvider>(
@@ -270,6 +271,9 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
       if (!mounted) {
         return;
       }
+      setState(() {
+        _appBarTitle = title;
+      });
       mainDashboardProvider!.updateIndex(index, title, mounted);
     });
   }
@@ -279,7 +283,9 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
     if (userId != null) {
       userProvider!.userId = userId;
     }
-
+    setState(() {
+      _appBarTitle = title;
+    });
     mainDashboardProvider!.updateIndex(index, title, mounted);
   }
 

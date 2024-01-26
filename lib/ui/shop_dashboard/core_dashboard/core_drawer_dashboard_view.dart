@@ -19,6 +19,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../../constant/route_paths.dart';
+
 class CoreDrawerDashboardView extends StatefulWidget {
   const CoreDrawerDashboardView(
       {Key? key,
@@ -44,8 +46,7 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
   @override
   Widget build(BuildContext context) {
     final PsValueHolder? valueHolder = Provider.of<PsValueHolder?>(context);
-    // mainDashboardProvider =
-    //     Provider.of<MainDashboardProvider>(context, listen: false);
+
     return Drawer(
       child: MultiProvider(
         providers: <SingleChildWidget>[

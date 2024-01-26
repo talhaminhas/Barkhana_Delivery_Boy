@@ -392,6 +392,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_sticky_header",
+      "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/flutter_sticky_header-0.6.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_svg",
       "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/flutter_svg-2.0.9",
       "packageUri": "lib/",
@@ -540,12 +546,6 @@
       "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/google_identity_services_web-0.2.2",
       "packageUri": "lib/",
       "languageVersion": "2.19"
-    },
-    {
-      "name": "google_mobile_ads",
-      "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/google_mobile_ads-4.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.15"
     },
     {
       "name": "google_sign_in",
@@ -1136,6 +1136,12 @@
       "languageVersion": "2.14"
     },
     {
+      "name": "value_layout_builder",
+      "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/value_layout_builder-0.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "vector_graphics",
       "rootUri": "file:///Users/its/.pub-cache/hosted/pub.dev/vector_graphics-1.1.9+2",
       "packageUri": "lib/",
@@ -1286,7 +1292,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-01-19T16:56:13.616741Z",
+  "generated": "2024-01-26T15:00:36.753012Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }
