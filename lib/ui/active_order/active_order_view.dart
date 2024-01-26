@@ -12,7 +12,6 @@ import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/completed_order_list_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/transaction_parameter_holder.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 class ActiveOrderListView extends StatefulWidget {
@@ -92,7 +91,7 @@ class _ActiveOrderListViewState extends State<ActiveOrderListView>
           if (provider.pendingTransactionList.data!.isNotEmpty) {
             return Column(
               children: <Widget>[
-                const PsAdMobBannerWidget(admobSize: AdSize.banner),
+                //const PsAdMobBannerWidget(admobSize: AdSize.banner),
                 Expanded(
                   child: Stack(
                     children: <Widget>[

@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_theme_data.dart';
@@ -14,7 +15,7 @@ import 'package:flutterrtdeliveryboyapp/provider/ps_provider_dependencies.dart';
 import 'package:flutterrtdeliveryboyapp/repository/ps_theme_repository.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/language.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,7 @@ import 'api/ps_api_service.dart';
 import 'config/ps_config.dart';
 import 'constant/ps_constants.dart';
 import 'db/common/ps_shared_preferences.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   // add this, and it should be the first line in main method
@@ -36,8 +38,10 @@ Future<void> main() async {
     await prefs.setString('codeL', '');
   }
 
-  await Firebase.initializeApp();
-  MobileAds.instance.initialize();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+ // MobileAds.instance.initialize();
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
@@ -61,7 +65,10 @@ Future<void> main() async {
     badge: true,
     sound: true,
   );
-
+  if(!kIsWeb) {
+    final String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print('fcmToken: $fcmToken');
+  }
   //check is apple signin is available
   await Utils.checkAppleSignInAvailable();
 

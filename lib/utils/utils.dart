@@ -368,6 +368,7 @@ class Utils {
       BuildContext context, String payload) async {
     showDialog<dynamic>(
         context: context,
+        barrierColor: PsColors.transparent,
         builder: (_) {
           return NotiDialog(message: '$payload');
       });
@@ -449,6 +450,7 @@ class Utils {
       } else {
         showDialog<dynamic>(
             context: context,
+            barrierColor: PsColors.transparent,
             builder: (_) {
               return NotiDialog(message: '$notiMessage');
             });
@@ -464,6 +466,7 @@ class Utils {
       } else {
         showDialog<dynamic>(
             context: context,
+            barrierColor: PsColors.transparent,
             builder: (_) {
               return NotiDialog(message: '$notiMessage');
             });

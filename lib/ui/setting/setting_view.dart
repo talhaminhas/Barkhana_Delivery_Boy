@@ -6,7 +6,7 @@ import 'package:flutterrtdeliveryboyapp/constant/ps_dimens.dart';
 import 'package:flutterrtdeliveryboyapp/constant/route_paths.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/ps_admob_banner_widget.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:theme_manager/theme_manager.dart';
 
 class SettingView extends StatefulWidget {
@@ -59,9 +59,9 @@ class _SettingViewState extends State<SettingView> {
               _SettingAppInfoWidget(),
               const SizedBox(height: PsDimens.space8),
               _SettingAppVersionWidget(),
-              const PsAdMobBannerWidget(
+             /* const PsAdMobBannerWidget(
                 admobSize: AdSize.mediumRectangle,
-              ),
+              ),*/
             ],
           ),
         ),

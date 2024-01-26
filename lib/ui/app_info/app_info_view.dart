@@ -12,7 +12,6 @@ import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/about_app.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/default_photo.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -94,7 +93,7 @@ class _AppInfoViewState extends State<AppInfoView>
                 padding: const EdgeInsets.all(PsDimens.space10),
                 child: Column(
                   children: <Widget>[
-                    const PsAdMobBannerWidget(admobSize: AdSize.banner),
+                    //const PsAdMobBannerWidget(admobSize: AdSize.banner),
                     _HeaderImageWidget(
                       photo: provider.aboutAppList.data![0].defaultPhoto! ,
                     ),

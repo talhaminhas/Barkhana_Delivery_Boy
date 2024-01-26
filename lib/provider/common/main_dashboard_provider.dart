@@ -50,7 +50,7 @@ class MainDashboardProvider extends PsProvider {
         _currentIndexCache != currentIndex) {
       _appBarTitleCache = appBarTitle;
       _currentIndexCache = currentIndex;
-
+      notifyListeners();
       // if (mounted) {
       //   if (!isDispose) {
       //     notifyListeners();
@@ -61,7 +61,7 @@ class MainDashboardProvider extends PsProvider {
           notifyListeners();
         }
       });
-      // }
-    }
+       }
+    //}
   }
 }

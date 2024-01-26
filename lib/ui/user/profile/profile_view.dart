@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfileView>
   bool isFirst = false;
   @override
   Widget build(BuildContext context) {
-    Utils.psPrint('Build Profile View');
+    Utils.psPrint('---------------------------------Build Profile View------------------------------');
     final Animation<double> animation =
         Utils.getTweenAnimation(widget.animationController!, 1);
 
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfileView>
       return const RejectUserView();
     }
 
-    updateTitle(provider!, Utils.getString(context, 'profile__title')); 
+    updateTitle(provider!, Utils.getString(context, 'profile__title'));
       return CustomScrollView(scrollDirection: Axis.vertical, slivers: <Widget>[
         _ProfileDetailWidget(
           animationController: widget.animationController!,
@@ -127,7 +127,7 @@ class _ProfileDetailWidget extends StatefulWidget {
 
   final AnimationController? animationController;
   final Animation<double>? animation;
-  final String userId;
+  final String? userId;
   final Function callLogoutCallBack;
 
   @override
@@ -135,65 +135,66 @@ class _ProfileDetailWidget extends StatefulWidget {
 }
 
 class __ProfileDetailWidgetState extends State<_ProfileDetailWidget> {
-  UserRepository? userRepository;
-  PsValueHolder? psValueHolder;
-  UserProvider? provider;
-  
   @override
   Widget build(BuildContext context) {
     const Widget _dividerWidget = Divider(
       height: 1,
     );
-
+    UserRepository userRepository;
+    PsValueHolder psValueHolder;
+    UserProvider provider;
     userRepository = Provider.of<UserRepository>(context);
-    psValueHolder = Provider.of<PsValueHolder?>(context);
+    psValueHolder = Provider.of<PsValueHolder>(context);
+    provider = UserProvider(repo: userRepository, psValueHolder: psValueHolder);
 
     return SliverToBoxAdapter(
-        child: ChangeNotifierProvider<UserProvider>(
-            lazy: false,
-            create: (BuildContext context) {
-              provider = UserProvider(
-                  repo: userRepository!, psValueHolder: psValueHolder);
-              if (!psValueHolder!.isUserToLogin()) {
-                provider!.getUser(psValueHolder!.loginUserId!);
-              }
-              return provider!;
-            },
-            child: Consumer<UserProvider>(builder:
-                (BuildContext context, UserProvider provider, Widget? child) {
-              Utils.psPrint(provider.user.status.toString());
-              if (
-                  provider.user.data != null &&
-                  provider.user.data!.userFlag != null) {
-                return AnimatedBuilder(
-                    animation: widget.animationController!,
-                    child: Container(
-                      color: PsColors.backgroundColor,
-                      child: Column(
-                        children: <Widget>[
-                          _ImageAndTextWidget(userProvider: provider),
-                          _dividerWidget,
-                          _FavAndSettingWidget(
-                            userLoginProvider: provider,
-                            callLogoutCallBack: widget.callLogoutCallBack),
-                          _dividerWidget,
-                          _JoinDateWidget(userProvider: provider),
-                          _dividerWidget,
-                        ],
-                      ),
+      child: ChangeNotifierProvider<UserProvider>(
+          lazy: false,
+          create: (BuildContext context) {
+            print(provider.getCurrentFirebaseUser());
+            if (provider.psValueHolder?.loginUserId == null ||
+                provider.psValueHolder?.loginUserId == '') {
+              provider.getUser(widget.userId!);
+            } else {
+              provider.getUser(provider.psValueHolder!.loginUserId!);
+            }
+            return provider;
+          },
+          child: Consumer<UserProvider>(builder:
+              (BuildContext context, UserProvider provider, Widget? child) {
+            if (provider.user.data != null) {
+              return AnimatedBuilder(
+                  animation: widget.animationController!,
+                  child: Container(
+                    color: PsColors.backgroundColor,
+                    child: Column(
+                      children: <Widget>[
+                        _ImageAndTextWidget(userProvider: provider),
+                        _dividerWidget,
+                        _EditAndHistoryRowWidget(userProvider: provider),
+                        _dividerWidget,
+                        /*_FavAndSettingWidget(
+                          userProvider: provider,
+                          callLogoutCallBack: widget.callLogoutCallBack),*/
+                        _JoinDateWidget(userProvider: provider),
+                        _dividerWidget,
+                      ],
                     ),
-                    builder: (BuildContext context, Widget? child) {
-                      return FadeTransition(
-                          opacity: widget.animation!,
-                          child: Transform(
-                              transform: Matrix4.translationValues(0.0,
-                                  100 * (1.0 - widget.animation!.value), 0.0),
-                              child: child));
-                    });
-              } else {
-                return Container();
-              }
-            })));
+                  ),
+                  builder: (BuildContext context, Widget? child) {
+                    return FadeTransition(
+                        opacity: widget.animation!,
+                        child: Transform(
+                          transform: Matrix4.translationValues(
+                              0.0, 100 * (1.0 - widget.animation!.value), 0.0),
+                          child: child,
+                        ));
+                  });
+            } else {
+              return Container();
+            }
+          })),
+    );
   }
 }
 
@@ -324,80 +325,177 @@ class _FavAndSettingWidget extends StatelessWidget {
 
 class _ImageAndTextWidget extends StatelessWidget {
   const _ImageAndTextWidget({this.userProvider});
-
   final UserProvider? userProvider;
-
   @override
   Widget build(BuildContext context) {
-    final PsValueHolder? psValueHolder =
-        Provider.of<PsValueHolder?>(context, listen: false);
-    final Widget _imageWidget = PsNetworkCircleImageForUser(
+    final Widget _imageWidget = PsNetworkCircleImage(
       photoKey: '',
       imagePath: userProvider!.user.data!.userProfilePhoto,
-      width: PsDimens.space80,
-      height: PsDimens.space80,
       boxfit: BoxFit.cover,
-      onTap: () async {
-        final dynamic returnData = await Navigator.pushNamed(
-          context,
-          RoutePaths.editProfile,
-        );
-        if (returnData) {
-          userProvider!.getUser(psValueHolder!.loginUserId ?? '');
-        }
-      },
+      onTap: () {},
     );
     const Widget _spacingWidget = SizedBox(
       height: PsDimens.space4,
     );
     return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(
-          top: PsDimens.space16, bottom: PsDimens.space16),
+      margin: const EdgeInsets.all(PsDimens.space20),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              const SizedBox(width: PsDimens.space16),
-              _imageWidget,
-              const SizedBox(width: PsDimens.space16),
-            ],
-          ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text(
-                  userProvider!.user.data!.userName!,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  maxLines: 1,
+            flex: 3,
+            child: AspectRatio(
+              aspectRatio: 1.0, // 1:1 aspect ratio
+              child: Container(
+                width: PsDimens.space140,
+                height: PsDimens.space140,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(width: 2.0, color: PsColors.mainColor),
                 ),
-                _spacingWidget,
-                Text(
-                  userProvider!.user.data!.userPhone != ''
-                      ? userProvider!.user.data!.userPhone!
-                      : Utils.getString(context, 'profile__phone_no'),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  maxLines: 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: _imageWidget,
                 ),
-                _spacingWidget,
-                Text(
-                  userProvider!.user.data!.userAboutMe != ''
-                      ? userProvider!.user.data!.userAboutMe!
-                      : Utils.getString(context, 'profile__about_me'),
-                  style: Theme.of(context).textTheme.bodySmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+              ),
+            ),
+          ),
+          const SizedBox(width: PsDimens.space16),
+          Expanded(
+            flex: 7,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child:
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    userProvider!.user.data!.userName!,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  _spacingWidget,
+                  if(userProvider!.user.data!.userPhone != '')
+                    Text(
+                      userProvider!.user.data!.userPhone!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: PsColors.textPrimaryLightColor),
+                    ),
+                  if(userProvider!.user.data!.userEmail != '')
+                    Text(
+                      userProvider!.user.data!.userEmail!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: PsColors.textPrimaryLightColor),
+                    ),
+
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+}
+class _EditAndHistoryRowWidget extends StatelessWidget {
+  const _EditAndHistoryRowWidget({@required this.userProvider});
+  final UserProvider? userProvider;
+  @override
+  Widget build(BuildContext context) {
+    final Widget _verticalLineWidget = Container(
+      color: Theme.of(context).dividerColor,
+      width: PsDimens.space1,
+      height: PsDimens.space48,
+    );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        _EditAndHistoryTextWidget(
+          userProvider: userProvider!,
+          checkText: 0,
+        ),
+        _verticalLineWidget,
+        /*_EditAndHistoryTextWidget(
+          userProvider: userProvider!,
+          checkText: 1,
+        ),
+        _verticalLineWidget,
+        _EditAndHistoryTextWidget(
+          userProvider: userProvider!,
+          checkText: 2,
+        )*/
+      ],
+    );
+  }
+}
+
+class _EditAndHistoryTextWidget extends StatelessWidget {
+  const _EditAndHistoryTextWidget({
+    Key? key,
+    required this.userProvider,
+    required this.checkText,
+  }) : super(key: key);
+
+  final UserProvider userProvider;
+  final int checkText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        flex: 2,
+        child: MaterialButton(
+            height: 50,
+            minWidth: double.infinity,
+            onPressed: () async {
+              if (checkText == 0) {
+                final dynamic returnData = await Navigator.pushNamed(
+                  context,
+                  RoutePaths.editProfile,
+                );
+                if (returnData != null && returnData is bool) {
+                  userProvider.getUser(userProvider.psValueHolder!.loginUserId!);
+                }
+              } else if (checkText == 1) {
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.historyList,
+                );
+              } else if (checkText == 2) {
+                /*Navigator.pushNamed(
+                  context,
+                  RoutePaths.orderList,
+                );*/
+              }
+            },
+            child: checkText == 0
+                ? Text(
+              Utils.getString(context, 'profile__edit'),
+              softWrap: false,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold, color: PsColors.discountColor),
+            )
+                : checkText == 1
+                ? Text(
+              Utils.getString(context, 'profile__history'),
+              softWrap: false,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )
+                : Text(
+              Utils.getString(context, 'profile__transaction'),
+              softWrap: false,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )));
   }
 }

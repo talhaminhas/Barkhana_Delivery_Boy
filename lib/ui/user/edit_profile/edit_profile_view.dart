@@ -475,28 +475,28 @@ class _UserFirstCardWidget extends StatelessWidget {
               titleText: Utils.getString(context, 'edit_profile__user_name'),
               hintText: Utils.getString(context, 'edit_profile__user_name'),
               textAboutMe: false,
-              phoneInputType: false,
+              isPhoneNumber: false,
               textEditingController: userNameController),
           PsTextFieldWidget(
               titleText: Utils.getString(context, 'edit_profile__email'),
               hintText: Utils.getString(context, 'edit_profile__email'),
               textAboutMe: false,
-              phoneInputType: false,
+              isPhoneNumber: false,
               textEditingController: emailController),
           PsTextFieldWidget(
               titleText: Utils.getString(context, 'edit_profile__phone'),
               textAboutMe: false,
-              phoneInputType: true,
+              isPhoneNumber: true,
               hintText: Utils.getString(context, 'edit_profile__phone'),
               textEditingController: phoneController),
-          PsTextFieldWidget(
+          /*PsTextFieldWidget(
               titleText: Utils.getString(context, 'edit_profile__about_me'),
               height: PsDimens.space120,
               keyboardType: TextInputType.multiline,
               textAboutMe: true,
-              phoneInputType: false,
+              isPhoneNumber: false,
               hintText: Utils.getString(context, 'edit_profile__about_me'),
-              textEditingController: aboutMeController),
+              textEditingController: aboutMeController),*/
         ],
       ),
     );

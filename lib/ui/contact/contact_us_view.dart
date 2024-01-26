@@ -12,6 +12,9 @@ import 'package:flutterrtdeliveryboyapp/viewobject/api_status.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/contact_us_holder.dart';
 import 'package:provider/provider.dart';
 
+import '../../config/ps_colors.dart';
+import '../../utils/ps_progress_dialog.dart';
+
 class ContactUsView extends StatefulWidget {
   const ContactUsView({Key? key, required this.animationController})
       : super(key: key);
@@ -37,6 +40,10 @@ class _ContactUsViewState extends State<ContactUsView> {
     const Widget _largeSpacingWidget = SizedBox(
       height: PsDimens.space8,
     );
+    void checkFields(String text){
+      setState(() {
+      });
+    }
     return ChangeNotifierProvider<ContactUsProvider>(
         lazy: false,
         create: (BuildContext context) {
@@ -47,72 +54,88 @@ class _ContactUsViewState extends State<ContactUsView> {
         child: Consumer<ContactUsProvider>(
           builder:
               (BuildContext context, ContactUsProvider provider, Widget? child) {
-            return AnimatedBuilder(
-                animation: widget.animationController,
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(PsDimens.space16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        PsTextFieldWidget(
-                            titleText: Utils.getString(
-                                context, 'contact_us__contact_name'),
-                            textAboutMe: false,
-                            hintText: Utils.getString(context,
-                                'contact_us__contact_name_hint'),
-                            textEditingController: nameController),
-                        PsTextFieldWidget(
-                            titleText: Utils.getString(
-                                context, 'contact_us__contact_email'),
-                            textAboutMe: false,
-                            hintText: Utils.getString(context,
-                                'contact_us__contact_email_hint'),
-                            textEditingController: emailController),
-                        PsTextFieldWidget(
-                            titleText: Utils.getString(
-                                context, 'contact_us__contact_phone'),
-                            textAboutMe: false,
-                            hintText: Utils.getString(context,
-                                'contact_us__contact_phone_hint'),
-                            keyboardType: TextInputType.phone,
-                            phoneInputType: true,
-                            textEditingController: phoneController),
-                        PsTextFieldWidget(
-                            titleText: Utils.getString(
-                                context, 'contact_us__contact_message'),
-                            textAboutMe: false,
-                            height: PsDimens.space160,
-                            hintText: Utils.getString(context,
-                                'contact_us__contact_message_hint'),
-                            textEditingController: messageController),
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: PsDimens.space16,
-                              top: PsDimens.space16,
-                              right: PsDimens.space16,
-                              bottom: PsDimens.space40),
-                          child: PsButtonWidget(
-                            provider: provider,
-                            nameText: nameController,
-                            emailText: emailController,
-                            messageText: messageController,
-                            phoneText: phoneController,
-                          ),
-                        ),
-                        _largeSpacingWidget,
-                      ],
-                    ),
-                  )),
-                  builder: (BuildContext context, Widget? child) {
-                    return FadeTransition(
-                        opacity: animation,
-                        child: Transform(
+                return AnimatedBuilder(
+                    animation: widget.animationController,
+                    child: Stack(
+                        children: <Widget>[
+                          SingleChildScrollView(
+                              child: Container(
+                                padding: const EdgeInsets.all(PsDimens.space8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    PsTextFieldWidget(
+                                        isMandatory: true,
+                                        titleText: Utils.getString(
+                                            context, 'contact_us__contact_name'),
+                                        textAboutMe: false,
+                                        hintText: Utils.getString(
+                                            context, 'contact_us__contact_name_hint'),
+                                        onChanged: checkFields,
+                                        textEditingController: nameController
+                                    ),
+                                    PsTextFieldWidget(
+                                        titleText: Utils.getString(
+                                            context, 'contact_us__contact_email'),
+                                        isMandatory: true,
+                                        textAboutMe: false,
+                                        isEmail: true,
+                                        hintText: Utils.getString(
+                                            context, 'contact_us__contact_email_hint'),
+                                        onChanged: checkFields,
+                                        textEditingController: emailController),
+                                    PsTextFieldWidget(
+                                        titleText: Utils.getString(
+                                            context, 'contact_us__contact_phone'),
+                                        isMandatory: true,
+                                        textAboutMe: false,
+                                        hintText: Utils.getString(
+                                            context, 'contact_us__contact_phone_hint'),
+                                        keyboardType: TextInputType.phone,
+                                        isPhoneNumber: true,
+                                        onChanged: checkFields,
+                                        textEditingController: phoneController),
+                                    PsTextFieldWidget(
+                                        titleText: Utils.getString(
+                                            context, 'contact_us__contact_message'),
+                                        isMandatory: true,
+                                        textAboutMe: false,
+                                        height: PsDimens.space160,
+                                        hintText: Utils.getString(
+                                            context,
+                                            'contact_us__contact_message_hint'),
+                                        onChanged: checkFields,
+                                        textEditingController: messageController),
+                                    Container(height: 50,)
+                                  ],
+                                ),
+                              )),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child:
+                            Container(
+                              margin: const EdgeInsets.all(PsDimens.space16),
+                              child: PsButtonWidget(
+                                provider: provider,
+                                nameText: nameController,
+                                emailText: emailController,
+                                messageText: messageController,
+                                phoneText: phoneController,
+                              ),
+                            ),
+                          )
+                        ]),
+                    builder: (BuildContext context, Widget? child) {
+                      return FadeTransition(
+                          opacity: animation,
+                          child: Transform(
                             transform: Matrix4.translationValues(
                                 0.0, 100 * (1.0 - animation.value), 0.0),
-                    
-                  child: child));
-                });
+                            child: child,
+                          ));
+                    });
             },
         ));
   }
@@ -143,28 +166,28 @@ class PsButtonWidget extends StatelessWidget {
               phoneText.text != '') {
             if (await Utils.checkInternetConnectivity()) {
               final ContactUsParameterHolder contactUsParameterHolder =
-                  ContactUsParameterHolder(
+              ContactUsParameterHolder(
                 name: nameText.text,
                 email: emailText.text,
                 message: messageText.text,
                 phone: phoneText.text,
               );
 
+              await PsProgressDialog.showDialog(context);
               final PsResource<ApiStatus> _apiStatus = await provider
                   .postContactUs(contactUsParameterHolder.toMap());
+              PsProgressDialog.dismissDialog();
 
               if (_apiStatus.data != null) {
                 print('Success');
-                nameText.clear();
-                emailText.clear();
                 messageText.clear();
-                phoneText.clear();
                 showDialog<dynamic>(
                     context: context,
+                    barrierColor: PsColors.transparent,
                     builder: (BuildContext context) {
                       if (_apiStatus.data!.status == 'success') {
-                        return SuccessDialog(
-                          message: _apiStatus.data!.status,
+                        return const SuccessDialog(
+                          message: 'Message Delivered',
                         );
                       } else {
                         return ErrorDialog(
@@ -176,10 +199,11 @@ class PsButtonWidget extends StatelessWidget {
             } else {
               showDialog<dynamic>(
                   context: context,
+                  barrierColor: PsColors.transparent,
                   builder: (BuildContext context) {
                     return ErrorDialog(
                       message:
-                          Utils.getString(context, 'error_dialog__no_internet'),
+                      Utils.getString(context, 'error_dialog__no_internet'),
                     );
                   });
             }
@@ -187,6 +211,7 @@ class PsButtonWidget extends StatelessWidget {
             print('Fail');
             showDialog<dynamic>(
                 context: context,
+                barrierColor: PsColors.transparent,
                 builder: (BuildContext context) {
                   return ErrorDialog(
                     message: Utils.getString(context, 'contact_us__fail'),

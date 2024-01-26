@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_dimens.dart';
@@ -28,67 +30,105 @@ class NewDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-              height: 60,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(5),
-                      topRight: Radius.circular(5)),
-                  border: Border.all(color: PsColors.mainColor, width: 5),
-                  color: PsColors.mainColor),
-              child: Row(
-                children: <Widget>[
-                  const SizedBox(width: PsDimens.space4),
-                  Icon(
-                    Icons.mail,
-                    color: PsColors.white,
-                  ),
-                  const SizedBox(width: PsDimens.space4),
-                  Text(
-                    Utils.getString(context, 'noti_dialog__notification'),
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: PsColors.white,
-                    ),
-                  ),
+        backgroundColor: PsColors.transparent,
+        shadowColor: PsColors.transparent,
+        shape: RoundedRectangleBorder(
+
+          borderRadius: BorderRadius.circular(PsDimens.space20),
+          side: BorderSide(
+            color: PsColors.mainColor,
+            width: 2.0,
+          ),
+        ),
+        child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.center,
+                colors: <Color>[
+                  PsColors.mainColor.withOpacity(0.9),
+                  PsColors.backgroundColor.withOpacity(0.6),
                 ],
-              )),
-          const SizedBox(height: PsDimens.space20),
-          Container(
-            padding: const EdgeInsets.only(
-                left: PsDimens.space16,
-                right: PsDimens.space16,
-                top: PsDimens.space8,
-                bottom: PsDimens.space8),
-            child: Text(
-              widget.message!,
-              style: TextStyle(color: PsColors.black),
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(PsDimens.space20)),
             ),
-          ),
-          const SizedBox(height: PsDimens.space20),
-          Divider(
-            color: PsColors.black,
-            height: 1,
-          ),
-          MaterialButton(
-            height: 50,
-            minWidth: double.infinity,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              Utils.getString(context, 'dialog__ok'),
-              style: TextStyle(
-                  color: PsColors.mainColor, fontWeight: FontWeight.bold),
-            ),
-          )
-        ],
-      ),
-    );
+            child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(PsDimens.space20)), // Adjust the border radius as needed
+                child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                    child:Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                            height: 60,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(PsDimens.space8),
+                            /*decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5)),
+                    color: PsColors.mainColor.withOpacity(0.7)),*/
+                            child: Row(
+                              children: <Widget>[
+                                const SizedBox(
+                                  width: PsDimens.space4,
+                                ),
+                                Icon(
+                                  Icons.message_outlined,
+                                  color: PsColors.white,
+                                ),
+                                const SizedBox(
+                                  width: PsDimens.space4,
+                                ),
+                                Text('Notification',
+                                    textAlign: TextAlign.start,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(color: PsColors.white)),
+                              ],
+                            )),
+                        const SizedBox(
+                          height: PsDimens.space20,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: PsDimens.space16,
+                              right: PsDimens.space16,
+                              top: PsDimens.space8,
+                              bottom: PsDimens.space8),
+                          child: Text(
+                              widget.message!,
+                              style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.bold)
+                          ),
+                        ),
+                        const SizedBox(
+                          height: PsDimens.space20,
+                        ),
+                        Divider(
+                          thickness: 2,
+                          height: 2,
+                          color: PsColors.mainColor,
+                        ),
+                        MaterialButton(
+                          height: 50,
+                          minWidth: double.infinity,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            Utils.getString(context, 'dialog__ok'),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(color: PsColors.mainColor,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                )
+            )));
   }
 }

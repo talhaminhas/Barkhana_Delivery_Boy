@@ -104,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                       /*const SizedBox(
                         height: PsDimens.space8,
                       ),*/
-                      if (PsConfig.showPhoneLogin)
+                      /*if (PsConfig.showPhoneLogin)
                         _LoginWithPhoneWidget(
                           callback: widget.callback,
                           provider: provider,
@@ -122,7 +122,7 @@ class _LoginViewState extends State<LoginView> {
                       if (Utils.isAppleSignInAvailable == 1 && Platform.isIOS)
                         _LoginWithAppleIdWidget(
                           callback: widget.callback,
-                        ),
+                        ),*/
                       _spacingWidget,
                       _ForgotPasswordAndRegisterWidget(
                         provider: provider,

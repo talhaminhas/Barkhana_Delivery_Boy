@@ -6,5 +6,5 @@
     <string name="fb_login_protocol_scheme">fb000000000000000</string>
 
     <string name="android__admob_ads_id_key">ca-app-pub-0000000000000000~0000000000</string>
-    
+    <string name="default_notification_channel_id">Channel ID</string>
 </resources>

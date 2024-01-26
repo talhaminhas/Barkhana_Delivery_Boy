@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../constant/ps_constants.dart';
 
-class PsAdMobBannerWidget extends StatefulWidget {
+/*class PsAdMobBannerWidget extends StatefulWidget {
   const PsAdMobBannerWidget({required this.admobSize});
 
   final AdSize admobSize;
@@ -85,4 +85,4 @@ class _PsAdMobBannerWidgetState extends State<PsAdMobBannerWidget> {
       height: _bannerAd!.size.height.toDouble(),
     );
   }
-}
+}*/

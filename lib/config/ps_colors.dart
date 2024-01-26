@@ -14,6 +14,7 @@ class PsColors {
   static Color mainDarkColor = _c_main_dark_color;
   static Color mainLightColor = _c_main_light_color;
   static Color mainLightColorWithBlack = _d_base_color;
+  static Color discountColor = _c_discount_color;
   static Color whiteColorWithBlack = _d_base_color;
   static Color mainLightColorWithWhite = PsColors.white;
   static Color mainShadowColor = Colors.black.withOpacity(0.5);
@@ -125,6 +126,7 @@ class PsColors {
   static const Color _c_blue_color = Colors.blue;
   static const Color _c_transparent_color = Colors.transparent;
   static const Color _c_paid_ads_color = Colors.lightGreen;
+  static const Color _c_discount_color = Color(0xFFFF4D4D);
 
   static const Color _c_facebook_login_color = Color(0xFF2153B2);
   static const Color _c_google_login_color = Color(0xFFFF4D4D);

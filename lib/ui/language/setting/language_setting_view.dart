@@ -9,7 +9,7 @@ import 'package:flutterrtdeliveryboyapp/ui/common/ps_admob_banner_widget.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/ps_dropdown_base_widget.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/language.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSettingView extends StatefulWidget {
@@ -90,9 +90,9 @@ class _LanguageSettingViewState extends State<LanguageSettingView> {
                         }
                         Utils.psPrint(result.toString());
                       }),
-                  const PsAdMobBannerWidget(
+                  /*const PsAdMobBannerWidget(
                     admobSize: AdSize.mediumRectangle,
-                  ),
+                  ),*/
                 ],
               ),
             ));
