@@ -31,6 +31,7 @@ import 'package:flutterrtdeliveryboyapp/viewobject/holder/intent_holder/shop_dat
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/trans_status_update_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/shop.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/shop_info.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/transaction_detail.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/transaction_header.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -43,7 +44,8 @@ import 'package:slider_button/slider_button.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../../viewobject/transaction_status.dart';
 import 'order_item_view.dart';
-
+GlobalKey<RefreshIndicatorState> orderDetailRefreshKey =
+GlobalKey<RefreshIndicatorState>();
 class OrderItemListView extends StatefulWidget {
   const OrderItemListView({
     Key? key,
@@ -74,6 +76,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
   PointRepository? pointRepository;
   ShopInfoRepository ?shopInfoRepository;
   TransactionHeader? transaction;
+  TransactionDetail? transactionDetail;
   Position? _currentPosition;
 
   @override
@@ -147,6 +150,10 @@ class _OrderItemListViewState extends State<OrderItemListView>
     setState(() {
       transaction = transactionHeader;
     });
+  }
+  dynamic updateTransactionDetail(TransactionDetail transactionDetail) {
+
+      transactionDetail = transactionDetail;
   }
 
   dynamic data;
@@ -244,6 +251,11 @@ class _OrderItemListViewState extends State<OrderItemListView>
           child: Consumer<TransactionDetailProvider>(builder:
               (BuildContext context, TransactionDetailProvider provider,
                   Widget? child) {
+            if(provider.transactionDetailList.data != null &&
+            provider.transactionDetailList.data!.isNotEmpty)
+            {
+              transactionDetail = provider.transactionDetailList.data![0];
+            }
             return Scaffold(
               key: scaffoldKey,
               appBar: AppBar(
@@ -267,6 +279,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                     Expanded(child:
                     Stack(children: <Widget>[
                       RefreshIndicator(
+                        key: orderDetailRefreshKey,
                         child: CustomScrollView(
                             controller: _scrollController,
                             scrollDirection: Axis.vertical,
@@ -317,68 +330,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                   ),
                                 ),
                               ),
-                              /*SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: PsDimens.space8, right: PsDimens.space8),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          width: PsDimens.space140,
-                                          height: PsDimens.space140,
-                                          padding:
-                                          const EdgeInsets.all(PsDimens.space8),
-                                          child: InkWell(
-                                            child: whiteCartWidget(
-                                              context,
-                                              Utils.getString(context,
-                                                  'transaction_list__total_amount'),
-                                              '${transaction!.currencySymbol} ${Utils.getPriceFormat(transaction!.balanceAmount!)}',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          width: PsDimens.space140,
-                                          height: PsDimens.space140,
-                                          padding:
-                                          const EdgeInsets.all(PsDimens.space8),
-                                          child: InkWell(
-                                            child: whiteCartWidget(
-                                              context,
-                                              Utils.getString(
-                                                  context, 'order_detail__payment'),
-                                              '${transaction!.paymentMethod}',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),*/
-                             /* SliverToBoxAdapter(
-                                child: Container(
-                                  color: PsColors.backgroundColor,
-                                  margin: const EdgeInsets.only(
-                                      top: PsDimens.space8,
-                                      bottom: PsDimens.space16,
-                                      left: PsDimens.space16,
-                                      right: PsDimens.space16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      _ShopInfoWidget(
-                                          shopId:
-                                          widget.intentTransaction.shopId ?? ''),
-                                    ],
-                                  ),
-                                ),
-                              ),*/
+
                               SliverToBoxAdapter(
                                 child: Container(
                                   color: PsColors.backgroundColor,
@@ -398,6 +350,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                           transactionHeaderProvider!,
                                           updateTransactionHeader:
                                           updateTransactionHeader,
+                                          transactionDetailProvider: provider!,
                                           shopInfoProvider: shopInfoProvider!),
                                     ],
                                   ),
@@ -453,11 +406,14 @@ class _OrderItemListViewState extends State<OrderItemListView>
                               SliverToBoxAdapter(
                                   child:
                                   Container(
-                                    height: 90,
+                                    height: 100,
                                   )
                               ),
                             ]),
                         onRefresh: () {
+                          setState(() {
+
+                          });
                           return provider.resetTransactionDetailList(transaction!);
                         },
                       ),
@@ -471,12 +427,14 @@ class _OrderItemListViewState extends State<OrderItemListView>
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
+                                color: Utils.hexToColor(
+                                    transactionDetail?.transactionStatus?.colorValue ?? ''),
                                 //.withOpacity(0.6),
                                 borderRadius: const BorderRadius.all(Radius.circular(25)),
                               ),
                               child: Text(
-                                transaction!.transactionStatus!.title ?? '-',
+                                transactionDetail?.transactionStatus?.title
+                                ?? '-',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                     fontSize: 17,
@@ -489,10 +447,10 @@ class _OrderItemListViewState extends State<OrderItemListView>
                         ),
                       ),
                       PSProgressIndicator(provider.transactionDetailList.status),
-                      if(int.parse(transaction!.transactionStatus!.ordering!) != 0
-                      && int.parse(transaction!.transactionStatus!.ordering!) != 5)
+                      if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '0') != 0
+                      && int.parse(transactionDetail?.transactionStatus?.ordering ?? '5') != 5)
                       Positioned(
-                          bottom: 0,right: 0,left: 0,
+                          bottom: 20,right: 0,left: 0,
                           child: Container(
                               child:SliderButton(
                                 width: double.infinity,
@@ -501,7 +459,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                   //change status to picked up
                                   String updatedStatusOrdering = '4';
                                   //change status to delivered
-                                  if(int.parse(transaction!.transactionStatus!.ordering!) == 4)
+                                  if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
                                     updatedStatusOrdering = '5';
                                   for (TransactionStatus transactionStatus in transactionStatusProvider!
                                       .transactionStatusList.data!) {
@@ -532,7 +490,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                 label: Align(
                                   alignment: const Alignment(0.3, 0.0),
                                   child:Text(
-                                    int.parse(transaction!.transactionStatus!.ordering!) < 4 ?
+                                    int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') < 4 ?
                                     'Slide To Start Delivery' :
                                     'Slide To Confirm Delivered',
                                     style: const TextStyle(
@@ -546,7 +504,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                 icon: Center(
                                     child: Icon(
                                       Icons.arrow_forward_rounded,
-                                      color: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
+                                      color: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
                                       size: 30.0,
                                     )),
 
@@ -554,7 +512,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                 //radius: 20,
                                 buttonColor: PsColors.mainColor,
                                 backgroundColor: PsColors.mainColor.withOpacity(0.6),
-                                highlightedColor: Utils.hexToColor(transaction!.transactionStatus!.colorValue!),
+                                highlightedColor: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
                                 baseColor: PsColors.white,
                               )
                           ),
@@ -700,6 +658,7 @@ class _OrderTextWidget extends StatefulWidget {
       required this.transactionStatusProvider,
       required this.transactionHeaderProvider,
       required this.updateTransactionHeader,
+        required this.transactionDetailProvider,
       required this.shopInfoProvider})
       : super(key: key);
 
@@ -708,6 +667,7 @@ class _OrderTextWidget extends StatefulWidget {
   final TransactionHeaderProvider transactionHeaderProvider;
   final Function updateTransactionHeader;
   final ShopInfoProvider shopInfoProvider;
+  final TransactionDetailProvider transactionDetailProvider;
 
   @override
   __OrderTextWidgetState createState() => __OrderTextWidgetState();
@@ -848,10 +808,59 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                             width: PsDimens.space8,
                           ),
                           Expanded(
-                            child: Text(
-                                'Customer Details',
-                                textAlign: TextAlign.left,
-                                style: Theme.of(context).textTheme.titleMedium),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                      'Customer Details',
+                                      textAlign: TextAlign.left,
+                                      style: Theme.of(context).textTheme.titleMedium),
+                                  const SizedBox(
+                                    height: PsDimens.space4,
+                                  ),
+                                  Text(
+                                    widget.transaction.contactName!,
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                  const SizedBox(
+                                    height: PsDimens.space4,
+                                  ),
+                                  Text(
+                                    widget.transaction.contactPhone!,
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                ],
+                              )
+                          ),
+                          Container(
+                            width: PsDimens.space60,
+                            height: PsDimens.space60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                              border: Border.all(width: 2.0, color: PsColors.mainColor),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6.0),
+                              child: PsNetworkCircleImage(
+                                photoKey: '',
+                                imagePath:
+                                widget.transactionDetailProvider.transactionDetailList.data!.isNotEmpty?
+                                widget.transactionDetailProvider.transactionDetailList.data![0].customerPhoto :
+                                    ''
+                                ,
+                                boxfit: BoxFit.cover,
+                                onTap: () {},
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -865,23 +874,10 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                   height: 1,
                   thickness: 1,
                 ),
-                /*const SizedBox(
-                  height: 5,
-                ),*/
-                _TransactionNoTextWidget(
-                  title:
-                  'Name :',
-                  transationInfoText: widget.transaction.contactName!,
-                ),
                 _TransactionNoTextWidget(
                   title:
                   'Address :',
                   transationInfoText: widget.transaction.contactAddress!,
-                ),
-                _TransactionNoTextWidget(
-                  title:
-                  'Phone Number :',
-                  transationInfoText: widget.transaction.contactPhone!,
                 ),
                 const SizedBox(
                   height: 10,
@@ -1239,21 +1235,21 @@ class _NoOrderWidget extends StatelessWidget {
             ),
             _TransactionNoTextWidget(
               transationInfoText:
-              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.totalItemAmount!)}',
+              '${transaction.currencySymbol}${Utils.getPriceFormat(transaction.totalItemAmount!, valueHolder)}',
               title:
               '${Utils.getString(context, 'transaction_detail__total_item_price')} :',
             ),
             _TransactionNoTextWidget(
               transationInfoText: transaction.discountAmount == '0'
                   ? '-'
-                  : '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.discountAmount!)}',
+                  : '- ${transaction.currencySymbol}${Utils.getPriceFormat(transaction.discountAmount!, valueHolder)}',
               title:
               '${Utils.getString(context, 'transaction_detail__discount')} :',
             ),
             _TransactionNoTextWidget(
               transationInfoText: transaction.cuponDiscountAmount == '0'
                   ? '-'
-                  : '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.cuponDiscountAmount!)}',
+                  : '- ${transaction.currencySymbol}${Utils.getPriceFormat(transaction.cuponDiscountAmount!, valueHolder)}',
               title:
               '${Utils.getString(context, 'transaction_detail__coupon_discount')} :',
             ),
@@ -1263,7 +1259,7 @@ class _NoOrderWidget extends StatelessWidget {
             _dividerWidget,
             _TransactionNoTextWidget(
               transationInfoText:
-              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.subTotalAmount!)}',
+              '${transaction.currencySymbol}${Utils.getPriceFormat(transaction.subTotalAmount!, valueHolder)}',
               title:
               '${Utils.getString(context, 'transaction_detail__sub_total')} :',
             ),
@@ -1275,7 +1271,7 @@ class _NoOrderWidget extends StatelessWidget {
             ),*/
             _TransactionNoTextWidget(
               transationInfoText:
-              '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.shippingAmount!)}',
+              '+ ${transaction.currencySymbol}${Utils.getPriceFormat(transaction.shippingAmount!, valueHolder)}',
               title:
               '${Utils.getString(context, 'checkout__delivery_cost')} :',
             ),
@@ -1310,7 +1306,7 @@ class _NoOrderWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.balanceAmount!)}' ,
+                      '${transaction.currencySymbol}${Utils.getPriceFormat(transaction.balanceAmount!, valueHolder)}' ,
                       style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                           fontWeight: FontWeight.normal,
                           color: PsColors.redColor

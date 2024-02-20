@@ -254,6 +254,8 @@ class __CardWidgetState extends State<_TextFieldAndSignInButtonWidget> {
         right: PsDimens.space16,
         top: PsDimens.space4,
         bottom: PsDimens.space4);
+    emailController.text = 'talha@itretail.co.uk';
+    passwordController.text = '61B811f6';
     return Column(
       children: <Widget>[
         Card(
@@ -474,10 +476,10 @@ class __LoginWithFbWidgetState extends State<_LoginWithFbWidget> {
         colorData: widget.userProvider.isCheckBoxSelect == false
             ? PsColors.facebookLoginButtonColor
             : PsColors.facebookLoginButtonColor,
-        onPressed: () async {
+        /*onPressed: () async {
           await widget.userProvider
               .loginWithFacebookId(context, widget.callback);
-        },
+        },*/
       ),
     );
   }

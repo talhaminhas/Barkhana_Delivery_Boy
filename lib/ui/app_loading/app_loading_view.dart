@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_resource.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_status.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
@@ -156,7 +156,7 @@ class AppLoadingView extends StatelessWidget {
     await appInfoProvider.replaceLoginUserId('');
     await appInfoProvider.replaceLoginUserName('');
     // await deleteTaskProvider.deleteTask();
-    await FacebookAuth.instance.logOut();
+    //await FacebookAuth.instance.logOut();
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
   }

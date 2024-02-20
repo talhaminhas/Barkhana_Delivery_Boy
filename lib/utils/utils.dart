@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_resource.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_config.dart';
@@ -26,8 +27,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:sembast/sembast.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../ui/common/ps_toast.dart';
+import '../ui/order/detail/order_item_list_view.dart';
+import '../ui/shop_dashboard/shop_home/shop_home_dashboard_view.dart';
 
 class Utils {
   Utils._();
@@ -179,11 +185,28 @@ class Utils {
       return false;
     }
   }
+  static String getPriceFormat(String price, PsValueHolder psValueHolder) {
 
-  static String getPriceFormat(String price) {
-      final NumberFormat psFormat = NumberFormat();
-    return psFormat.format(double.parse(price));
+    return getPriceTwoDecimal(price);
   }
+
+  static String getPriceTwoDecimal(String price) {
+    final double parsedPrice = double.parse(price);
+    return parsedPrice.toStringAsFixed(2);
+  }
+
+  /*static String getPriceFormat(String price, PsValueHolder psValueHolder) {
+      final NumberFormat psFormat = NumberFormat(psValueHolder.priceFormat);
+    return psFormat.format(double.parse( getPriceTwoDecimal(price)));
+  }
+  static String getPriceTwoDecimal(String? price) {
+    if(price != null){
+      return PsConst.priceTwoDecimalFormat.format(double.parse(price));
+    }else{
+      return '';
+    }
+
+  }*/
   /*static String getPriceFormat(String price, PsValueHolder psValueHolder) {
     final NumberFormat psFormat = NumberFormat(psValueHolder.priceFormat);
     return psFormat.format(double.parse(price));
@@ -297,7 +320,7 @@ class Utils {
     return DateFormat().format(date);
   }
 
-  static String calculateShippingTax(String shippingCost, String shippingTax) {
+  static String calculateShippingTax(String shippingCost, String shippingTax, PsValueHolder psValueHolder) {
     // Get Tax
     if (shippingTax == '') {
       shippingTax = '0.0';
@@ -316,7 +339,7 @@ class Utils {
     final double cost = double.parse(shippingCost);
 
     // Caculate and ReFormat
-    return Utils.getPriceFormat((cost * tax).toString());
+    return Utils.getPriceFormat((cost * tax).toString(), psValueHolder);
   }
 
   static Widget flightShuttleBuilder(
@@ -366,12 +389,41 @@ class Utils {
 
   static Future<void> _onSelectNotification(
       BuildContext context, String payload) async {
-    showDialog<dynamic>(
+    /*showDialog<dynamic>(
         context: context,
         barrierColor: PsColors.transparent,
         builder: (_) {
           return NotiDialog(message: '$payload');
-      });
+      });*/
+    showToastWidget(
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(color: PsColors.mainColor),
+          borderRadius: BorderRadius.circular(5.0),
+          color: PsColors.mainColor, // Background color
+        ),
+        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(15.0),
+        child: Text(
+          '$payload',
+          textAlign: TextAlign.left, // Text alignment
+          style: const TextStyle(
+            color: Colors.white,
+
+          ),
+        ),
+      ),
+      context: context,
+      animation: StyledToastAnimation.slideFromTop,
+      reverseAnimation: StyledToastAnimation.slideFromTop,
+      position: const StyledToastPosition(align: Alignment.topCenter, offset: 50.0),
+      animDuration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 4),
+      curve: Curves.elasticOut,
+      reverseCurve: Curves.elasticOut,
+    );
+    //PsToast().showToast('$payload');
   }
 
   static void subscribeToTopic(bool isEnable) {
@@ -408,8 +460,10 @@ class Utils {
     }
     // On Open
     FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
+      shopHomeRefreshKey.currentState?.show();
+      orderDetailRefreshKey.currentState?.show();
       final Map<String, dynamic> message = event.data;
-      print('onMessage: $message');
+      print('onMessage1: $message');
       print(event);
 
       final String notiMessage = _parseNotiMessage(message);
@@ -423,7 +477,7 @@ class Utils {
     // OnLaunch, OnResume
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       final Map<String, dynamic> message = event.data;
-      print('onMessage: $message');
+      print('onMessage2: $message');
       print(event);
 
       final String notiMessage = _parseNotiMessage(message);
@@ -448,12 +502,13 @@ class Utils {
       if (flag == 'transaction') {
         _onSelectNotification(context, notiMessage);
       } else {
-        showDialog<dynamic>(
+        /*showDialog<dynamic>(
             context: context,
             barrierColor: PsColors.transparent,
             builder: (_) {
               return NotiDialog(message: '$notiMessage');
-            });
+            });*/
+        PsToast().showToast('$notiMessage');
       }
     } else if (Platform.isIOS) {
       final String flag = data['flag'];
@@ -464,12 +519,13 @@ class Utils {
       if (flag == 'transaction') {
         _onSelectNotification(context, notiMessage);
       } else {
-        showDialog<dynamic>(
+        /*showDialog<dynamic>(
             context: context,
             barrierColor: PsColors.transparent,
             builder: (_) {
               return NotiDialog(message: '$notiMessage');
-            });
+            });*/
+        PsToast().showToast('$notiMessage');
       }
     }
   }

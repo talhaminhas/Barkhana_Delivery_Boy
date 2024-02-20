@@ -2,10 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need access to your location to update your location within the app.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need access to your location to update your location within the app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone to make phone calls within the app.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload and share photos within the app.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Barkhana Delivery Boy</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,84 +25,19 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Barkhana Delivery Boy</string>
+	<string>barkhana_delivery_boy</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.000000000000-00000000000000000000000000000000</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb000000000000</string>
-				<string>com.googleusercontent.apps.000000000000-00000000000000000000000000000000</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>FacebookAppID</key>
-	<string>000000000000</string>
-	<key>FacebookDisplayName</key>
-	<string>Barkhana Delivery Boy</string>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-	</array>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
-	</dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>$(PRODUCT_NAME) user your Music.</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) requires bluetooth access for Google Ads</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>$(PRODUCT_NAME) requires bluetooth access for Google Ads</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>$(PRODUCT_NAME) user your calendar.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera to upload your profile photo and item photo.</string>
-	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) contacts use.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background to get the food delivery location.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background to get the food delivery location.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app does not require access to the microphone.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>$(PRODUCT_NAME) motion use.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app requires access to the photo library to upload your profile photo and item photo.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library to upload your profile photo and item photo.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>$(PRODUCT_NAME) speech recognition use.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -98,28 +45,22 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIRequiresFullScreen </key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
 </dict>
 </plist>

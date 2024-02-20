@@ -349,7 +349,7 @@
   "transaction_detail__status": "Status :",
   "transaction_detail__view_details": "View Detail",
   "transaction_detail__customized": "Customized :",
-  "transaction_detail__add_on": "Add On :",
+  "transaction_detail__add_on": "Add On",
   "comment_list__title": "Comment List",
   "comment_list__comment_hint": "Comment",
   "comment_list__replies": "replies",

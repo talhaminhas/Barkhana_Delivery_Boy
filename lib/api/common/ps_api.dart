@@ -117,8 +117,9 @@ abstract class PsApi {
 
       // return psApiResponse;
       if (psApiResponse.isSuccessful()) {
-        final dynamic hashMap = json.decode(response.body);
 
+        final dynamic hashMap = json.decode(response.body);
+        //print(response.body);
         if (!(hashMap is Map)) {
           final List<T> tList = <T>[];
           hashMap.forEach((dynamic data) {
@@ -175,6 +176,7 @@ abstract class PsApi {
 
       // return psApiResponse;
       if (psApiResponse.isSuccessful()) {
+        //print(response.body);
         final dynamic hashMap = json.decode(response.body);
 
         // return PsResource<R>(PsStatus.SUCCESS, "", obj.fromMap(hashMap));
@@ -203,44 +205,39 @@ abstract class PsApi {
     }
   }
 
-  Future<PsResource<R>> postUploadImage<T extends PsObject<dynamic>, R>(T obj,
-      String url, String userId, String platformName, File imageFile) async {
+
+  Future<PsResource<R>> postUploadImage<T extends PsObject<dynamic>, R>(
+      T obj, String url, String userId, String platformName, File imageFile) async {
+    print('postUploadImage');
     if (PSApp.apiTokenRefresher.isExpired) {
-      print('postUploadImage');
       await PSApp.apiTokenRefresher.updateToken();
     }
     final Client client = http.Client();
     try {
-      final ByteStream stream =
-          http.ByteStream(Stream.castFrom(imageFile.openRead()));
-      final int length = await imageFile.length();
-
       final Uri uri = Uri.parse('${PsConfig.ps_app_url}$url');
 
       final MultipartRequest request = http.MultipartRequest('POST', uri);
+      request.headers['authorization'] = PsSharedPreferences.instance.getApiToken() ?? ''; // Adding the authorization token
+
+      final ByteStream stream = http.ByteStream(Stream.castFrom(imageFile.openRead()));
+      final int length = await imageFile.length();
+
       final MultipartFile multipartFile = http.MultipartFile(
-          'file', stream, length,
-          filename: basename(imageFile.path));
-      //contentType: new MediaType('image', 'png'));
+        'file', stream, length,
+        filename: basename(imageFile.path),
+      );
 
       request.fields['user_id'] = userId;
       request.fields['platform_name'] = platformName;
       request.files.add(multipartFile);
+
       final StreamedResponse response = await request.send();
 
-      final PsApiResponse psApiResponse =
-          PsApiResponse(await http.Response.fromStream(response));
+      final PsApiResponse psApiResponse = PsApiResponse(await http.Response.fromStream(response));
 
-      //  final PsApiResponse psApiResponse = PsApiResponse(response);
-
-      // final PsApiResponse psApiResponse =
-      // await PsApiStreamResponse().getPsApiStreamResponse(response);
-
-      // return psApiResponse.body as dynamic;
       if (psApiResponse.isSuccessful()) {
         final dynamic hashMap = json.decode(psApiResponse.body!);
 
-        // return PsResource<R>(PsStatus.SUCCESS, "", obj.fromMap(hashMap));
         if (!(hashMap is Map)) {
           final List<T> tList = <T>[];
           hashMap.forEach((dynamic data) {
@@ -250,7 +247,10 @@ abstract class PsApi {
         } else {
           return PsResource<R>(PsStatus.SUCCESS, '', obj.fromMap(hashMap));
         }
-      } else {
+      }
+      else {
+        if(psApiResponse.isUnauthorized())
+          PSApp.apiTokenRefresher.isExpired = true;
         return PsResource<R>(PsStatus.ERROR, psApiResponse.errorMessage, null);
       }
     } finally {

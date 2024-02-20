@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_config.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_constants.dart';
@@ -36,6 +36,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../../viewobject/user.dart';
 import 'core_appbar_dashboard_view.dart';
 import 'core_drawer_dashboard_view.dart';
 
@@ -79,7 +80,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
   DeleteTaskProvider? deleteTaskProvider;
   MainDashboardProvider? mainDashboardProvider;
   String? _appBarTitle;
-
+  User? user;
   @override
   Widget build(BuildContext context) {
     print('** Build Shop Dashboard **');
@@ -125,6 +126,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
                 create: (BuildContext context) {
                   userProvider = UserProvider(
                       repo: userRepository!, psValueHolder: valueHolder);
+                  userProvider!.getUser(valueHolder!.loginUserId ?? '');
                   return userProvider!;
                 }),
             ChangeNotifierProvider<DeleteTaskProvider>(
@@ -236,7 +238,8 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
 
               /// Contact Us
               case PsConst.REQUEST_CODE__MENU_CONTACT_US_FRAGMENT:
-                return ContactUsView(animationController: animationController);
+                return ContactUsView(animationController: animationController,
+                  userProvider: userProvider);
                // break;
 
               /// Setting
@@ -297,7 +300,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
       await provider.replaceLoginUserId('');
       await provider.replaceLoginUserName('');
       await deleteTaskProvider.deleteTask();
-      await FacebookAuth.instance.logOut();
+      //await FacebookAuth.instance.logOut();
       await GoogleSignIn().signOut();
       await fb_auth.FirebaseAuth.instance.signOut();
     }

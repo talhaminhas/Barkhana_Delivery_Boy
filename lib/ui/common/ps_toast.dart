@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import '../../config/ps_colors.dart';
 
 class PsToast {
@@ -11,8 +11,9 @@ class PsToast {
                   Toast length = Toast.LENGTH_LONG }) {
     
     backgroundColor ??= PsColors.mainColor;
-    textColor ??= PsColors.white;
-    
+    textColor ??= PsColors.redColor;
+
+
     Fluttertoast.showToast(
         msg: message,
         toastLength: length,

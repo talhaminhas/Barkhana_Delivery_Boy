@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_resource.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_status.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
@@ -47,6 +48,8 @@ import 'package:flutterrtdeliveryboyapp/viewobject/transaction_parameter_holder.
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+GlobalKey<RefreshIndicatorState> shopHomeRefreshKey =
+GlobalKey<RefreshIndicatorState>();
 class ShopHomeDashboardViewWidget extends StatefulWidget {
   const ShopHomeDashboardViewWidget({
     this.animationController,
@@ -326,7 +329,9 @@ class _ShopHomeDashboardViewWidgetState
           child: Container(
             color: PsColors.coreBackgroundColor,
             child: RefreshIndicator(
+              key: shopHomeRefreshKey,
               onRefresh: () {
+
                 pendingOrderProvider!.resetPendingOrderList(
                     pendingOrderListHolder!.toMap(),
                     TransactionParameterHolder()
@@ -382,30 +387,41 @@ class _ShopHomeDashboardViewWidgetState
           //_pages[_currentIndex],
           ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-      currentIndex: _currentIndex,
-      selectedItemColor: PsColors.mainColor,
-      onTap: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon:  Icon(Icons.library_books_outlined),
-          label: 'Pending',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // Adjust the shadow color and opacity as needed
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: const Offset(0, 0), // Adjust the offset to control the shadow position
+            ),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.directions_bike_sharp),
-          label: 'Delivering',
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          selectedItemColor: PsColors.mainColor,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.library_books_outlined),
+              label: 'Pending',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_bike_sharp),
+              label: 'Delivering',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.library_add_check_outlined),
+              label: 'Completed',
+            ),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.library_add_check_outlined),
-          label: 'Completed',
-        ),
-      ],
-    ),
-    );
+      ));
   }
 }
 

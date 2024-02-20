@@ -5,11 +5,13 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutterrtdeliveryboyapp/api/ps_api_service.dart';
+import 'package:flutterrtdeliveryboyapp/ui/order/detail/order_item_list_view.dart';
 
 import '../constant/ps_constants.dart';
 import '../db/common/ps_shared_preferences.dart';
 import '../provider/app_info/app_info_provider.dart';
 import '../ui/common/ps_toast.dart';
+import '../ui/shop_dashboard/shop_home/shop_home_dashboard_view.dart';
 import '../utils/utils.dart';
 import '../viewobject/api_token.dart';
 import 'common/ps_resource.dart';
@@ -23,6 +25,11 @@ class ApiTokenRefresher  extends WidgetsBindingObserver{
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       updateToken();
+    }
+    if(state == AppLifecycleState.resumed)
+    {
+      shopHomeRefreshKey.currentState?.show();
+      orderDetailRefreshKey.currentState?.show();
     }
   }
   late PsApiService _psApiService;
@@ -83,7 +90,7 @@ class ApiTokenRefresher  extends WidgetsBindingObserver{
           Utils.getString(context, 'home__drawer_menu_menu'),
           PsConst.REQUEST_CODE__MENU_HOME_FRAGMENT);
     }*/
-    PsToast().showToast(Utils.getString(context, 'user_logged__out'));
+    PsToast().showToast('Session expired, please login again.');
   }
 
   Future<dynamic> getApiToken(String email, String password) async {

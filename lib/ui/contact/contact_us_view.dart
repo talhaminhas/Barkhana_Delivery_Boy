@@ -9,16 +9,19 @@ import 'package:flutterrtdeliveryboyapp/ui/common/ps_button_widget.dart';
 import 'package:flutterrtdeliveryboyapp/ui/common/ps_textfield_widget.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/api_status.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/holder/contact_us_holder.dart';
 import 'package:provider/provider.dart';
 
 import '../../config/ps_colors.dart';
+import '../../provider/user/user_provider.dart';
 import '../../utils/ps_progress_dialog.dart';
 
 class ContactUsView extends StatefulWidget {
-  const ContactUsView({Key? key, required this.animationController})
+  const ContactUsView({Key? key, required this.animationController, this.userProvider})
       : super(key: key);
   final AnimationController animationController;
+  final UserProvider? userProvider;
   @override
   _ContactUsViewState createState() => _ContactUsViewState();
 }
@@ -54,6 +57,11 @@ class _ContactUsViewState extends State<ContactUsView> {
         child: Consumer<ContactUsProvider>(
           builder:
               (BuildContext context, ContactUsProvider provider, Widget? child) {
+                if(widget.userProvider!.user.data != null) {
+                  nameController.text = widget.userProvider!.user.data!.userName!;
+                  emailController.text = widget.userProvider!.user.data!.userEmail!;
+                  phoneController.text = widget.userProvider!.user.data!.userPhone!;
+                }
                 return AnimatedBuilder(
                     animation: widget.animationController,
                     child: Stack(

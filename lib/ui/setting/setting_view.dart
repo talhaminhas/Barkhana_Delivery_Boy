@@ -47,17 +47,18 @@ class _SettingViewState extends State<SettingView> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
+              const SizedBox(height: PsDimens.space8),
               _SettingPrivacyWidget(),
               const SizedBox(height: PsDimens.space8),
-              _SettingNotificationWidget(),
-              const SizedBox(height: PsDimens.space8),
+              //_SettingNotificationWidget(),
+              //const SizedBox(height: PsDimens.space8),
               _IntroSliderWidget(),
               const SizedBox(height: PsDimens.space8),
               _SettingDarkAndWhiteModeWidget(
                   animationController: widget.animationController),
               const SizedBox(height: PsDimens.space8),
-              _SettingAppInfoWidget(),
-              const SizedBox(height: PsDimens.space8),
+              //_SettingAppInfoWidget(),
+              //const SizedBox(height: PsDimens.space8),
               _SettingAppVersionWidget(),
              /* const PsAdMobBannerWidget(
                 admobSize: AdSize.mediumRectangle,

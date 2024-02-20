@@ -1,4 +1,6 @@
 import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_object.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/transaction_status.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/user.dart';
 
 class TransactionDetail extends PsObject<TransactionDetail> {
   TransactionDetail(
@@ -32,7 +34,9 @@ class TransactionDetail extends PsObject<TransactionDetail> {
       this.addedDateStr,
       this.productAttributePrice,
       this.productAddonPrice,
-        this.productAddonId,});
+        this.customerPhoto,
+        this.productAddonId,
+      this.transactionStatus});
   String? id;
   String? transactionsHeaderId;
   String? productId;
@@ -64,6 +68,8 @@ class TransactionDetail extends PsObject<TransactionDetail> {
   String? addedDateStr;
   String? productAddonPrice;
   String? productAddonId;
+  String? customerPhoto;
+  TransactionStatus? transactionStatus;
   @override
   String? getPrimaryKey() {
     return id;
@@ -103,6 +109,8 @@ class TransactionDetail extends PsObject<TransactionDetail> {
           shippingCost: dynamicData['shipping_cost'],
           productAddonId: dynamicData['product_addon_id'],
           productAddonPrice: dynamicData['product_addon_price'],
+          customerPhoto: dynamicData['customer_photo'],
+          transactionStatus: TransactionStatus().fromMap(dynamicData['transaction_status']),
           addedDateStr: dynamicData['added_date_str']);
     // } else {
     //   return null;
@@ -144,6 +152,9 @@ class TransactionDetail extends PsObject<TransactionDetail> {
       data['added_date_str'] = object.addedDateStr;
       data['product_addon_id'] = object.productAddonId;
       data['product_addon_price'] = object.productAddonPrice;
+      data['customer_photo'] = object.customerPhoto;
+      data['transaction_status'] =
+          TransactionStatus().toMap(object.transactionStatus);
       return data;
     } else {
       return null;

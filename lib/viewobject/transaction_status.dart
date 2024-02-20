@@ -20,8 +20,8 @@ class TransactionStatus extends PsObject<TransactionStatus> {
   }
 
   @override
-  TransactionStatus fromMap(dynamic dynamicData) {
-    // if (dynamicData != null) {
+  TransactionStatus? fromMap(dynamic dynamicData) {
+     if (dynamicData != null) {
       return TransactionStatus(
         id: dynamicData['id'],
         title: dynamicData['title'],
@@ -29,9 +29,9 @@ class TransactionStatus extends PsObject<TransactionStatus> {
         colorValue: dynamicData['color_value'],
         addedDate: dynamicData['added_date'],
       );
-    // } else {
-    //   return null;
-    // }
+     } else {
+       return null;
+    }
   }
 
   @override
@@ -56,7 +56,7 @@ class TransactionStatus extends PsObject<TransactionStatus> {
     // if (dynamicDataList != null) {
       for (dynamic dynamicData in dynamicDataList) {
         if (dynamicData != null) {
-          defaultPhotoList.add(fromMap(dynamicData));
+          defaultPhotoList.add(fromMap(dynamicData)!);
         }
       }
     // }

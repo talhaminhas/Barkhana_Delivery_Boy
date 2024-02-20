@@ -2,7 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_constants.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_dimens.dart';
@@ -197,11 +197,11 @@ class _CoreDrawerDashboardViewState extends State<CoreDrawerDashboardView> {
                                     await provider.replaceLoginUserId('');
                                     await provider.replaceIsDeliveryBoy('');
                                     await deleteTaskProvider!.deleteTask();
-                                    await FacebookAuth.instance.logOut();
-                                    await GoogleSignIn().signOut();
+                                    //await FacebookAuth.instance.logOut();
+                                    //await GoogleSignIn().signOut();
                                     await FirebaseAuth.instance.signOut();
+                                    Navigator.pop(context);
 
-                                    Navigator.of(context).pop();
                                     // mainDashboardProvider.updateIndex(
                                     //     PsConst
                                     //         .REQUEST_CODE__MENU_HOME_FRAGMENT,

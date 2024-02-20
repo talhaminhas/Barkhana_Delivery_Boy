@@ -163,7 +163,7 @@ class _OrderTextWidget extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.normal),
         ),
         Text(
-          '${transaction.currencySymbol} ${Utils.getPriceFormat(transaction.balanceAmount!)}',
+          '',//${transaction.currencySymbol}${Utils.getPriceFormat(transaction.balanceAmount!, valueHolder)}',
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               fontWeight: FontWeight.normal, color: PsColors.mainColor),
         )

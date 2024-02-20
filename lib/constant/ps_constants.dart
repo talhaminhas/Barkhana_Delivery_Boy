@@ -8,6 +8,10 @@ import 'package:intl/intl.dart';
 
 class PsConst {
   PsConst._();
+  // static final NumberFormat psFormat = NumberFormat(PsConfig.priceFormat);
+  static const String priceTwoDecimalFormatString = '###.00';
+  static final NumberFormat priceTwoDecimalFormat =
+  NumberFormat(priceTwoDecimalFormatString);
 
   static const int API_TOKEN_UPDATE_DURATION = 25;// in minutes
   static const int API_TOKEN_RETRY_DURATION = 10;// in seconds

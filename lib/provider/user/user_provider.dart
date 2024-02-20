@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_resource.dart';
 import 'package:flutterrtdeliveryboyapp/api/common/ps_status.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_constants.dart';
@@ -716,7 +716,7 @@ class UserProvider extends PsProvider {
   ///
   /// Facebook Login Related
   ///
-  Future<void> loginWithFacebookId(
+  /*Future<void> loginWithFacebookId(
       BuildContext context, Function? onFacebookIdSignInSelected) async {
     ///
     /// Check User is Accept Terms and Conditions
@@ -840,7 +840,7 @@ class UserProvider extends PsProvider {
       return null;
     }
   }
-
+*/
   Future<PsResource<User>?> _submitLoginWithFacebookId(BuildContext context,
       FacebookLoginUserHolder facebookLoginUserHolder) async {
     final fb_auth.User? user = facebookLoginUserHolder.firebaseUser;

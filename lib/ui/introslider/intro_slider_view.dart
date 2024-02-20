@@ -261,14 +261,14 @@ class IntroSliderSecondWidget extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 2.0),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: PsColors.mainColor)),
+                          shape: BoxShape.circle, color: PsColors.white)),
                   Container(
                       width: 8.0,
                       height: 8.0,
                       margin: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 2.0),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: PsColors.white)),
+                          shape: BoxShape.circle, color: PsColors.mainColor)),
                   Container(
                       width: 8.0,
                       height: 8.0,

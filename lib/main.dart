@@ -13,6 +13,7 @@ import 'package:flutterrtdeliveryboyapp/config/router.dart' as router;
 import 'package:flutterrtdeliveryboyapp/provider/common/ps_theme_provider.dart';
 import 'package:flutterrtdeliveryboyapp/provider/ps_provider_dependencies.dart';
 import 'package:flutterrtdeliveryboyapp/repository/ps_theme_repository.dart';
+import 'package:flutterrtdeliveryboyapp/ui/map/polyline_view.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/language.dart';
 //import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -65,10 +66,10 @@ Future<void> main() async {
     badge: true,
     sound: true,
   );
-  if(!kIsWeb) {
+  /*if(!kIsWeb) {
     final String? fcmToken = await FirebaseMessaging.instance.getToken();
     print('fcmToken: $fcmToken');
-  }
+  }*/
   //check is apple signin is available
   await Utils.checkAppleSignInAvailable();
 
@@ -109,9 +110,15 @@ class _PSAppState extends State<PSApp> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(PSApp.apiTokenRefresher);
     super.initState();
   }
-
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(PSApp.apiTokenRefresher);
+    print('psapp disposed called');
+    super.dispose();
+  }
   Future<ThemeData> getSharePerference(
       EasyLocalization provider, dynamic data) {
     Utils.psPrint('>> get share perference');
