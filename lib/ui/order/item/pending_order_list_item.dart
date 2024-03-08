@@ -12,13 +12,14 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashboardOrderListItem extends StatelessWidget {
-  const DashboardOrderListItem({
+   DashboardOrderListItem({
     Key? key,
     required this.transaction,
     this.animationController,
     this.animation,
     this.onTap,
     required this.scaffoldKey,
+    this.showDateBanner = false
   }) : super(key: key);
 
   final TransactionHeader transaction;
@@ -26,6 +27,7 @@ class DashboardOrderListItem extends StatelessWidget {
   final AnimationController? animationController;
   final Animation<double>? animation;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  bool showDateBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +38,10 @@ class DashboardOrderListItem extends StatelessWidget {
           child: GestureDetector(
             onTap: onTap as void Function()?,
             child: Container(
-              color: PsColors.backgroundColor,
+              color: PsColors.transparent,
               margin: const EdgeInsets.only(bottom: PsDimens.space8, top: PsDimens.space8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   /*_NoOrderWidget(
                     transaction: transaction,
@@ -48,6 +50,22 @@ class DashboardOrderListItem extends StatelessWidget {
                   const Divider(
                     height: PsDimens.space1,
                   ),*/
+                  if (showDateBanner)
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      /*decoration: BoxDecoration(
+                        //borderRadius: BorderRadius.circular(20.0),
+                        //color: PsColors.mainColor,
+                      ),*/
+                      child: Text(
+                        DateFormat('yyyy-MM-dd').format(DateTime.parse(transaction.updatedDate!)),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: PsColors.mainColor,
+                        ),
+                      ),
+                    ),
                   _TransactionTextWidget(
                     transaction: transaction,
                   ),
@@ -323,9 +341,12 @@ class _TransactionTextWidget extends StatelessWidget {
                           )
                           :
                           Text(
-                            transaction.transactionStatus!.ordering == '5' ? 'Order No :'
+                              transaction.transactionStatus!.ordering == '2' ? 'Upcoming Order'
+                                  :
+                              transaction.transactionStatus!.ordering == '5' ? 'Order No :'
                               : transaction.transactionStatus!.title!,
-                              textAlign: TextAlign.left,
+                              textAlign: transaction.transactionStatus!.ordering == '5' ?
+                              TextAlign.left : TextAlign.center,
                               style: Theme.of(context).textTheme.titleMedium!
                                   .copyWith(
                                 fontSize: 20,
@@ -334,14 +355,14 @@ class _TransactionTextWidget extends StatelessWidget {
                           )
                         ),
                         if (transaction.transactionStatus!.ordering == '2')
-                        Container(
+                        /*Container(
                           //margin: const EdgeInsets.only(right: 10),
                           child:
                           SpinKitThreeBounce(
                             color:  Utils.hexToColor(transaction.transactionStatus!.colorValue!),
                             size: PsDimens.space16,
                           ),
-                        ),
+                        ),*/
                         if (transaction.transactionStatus!.ordering == '4')
                           Container(
                             //margin: const EdgeInsets.only(right: 10),

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutterrtdeliveryboyapp/config/ps_colors.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_constants.dart';
 import 'package:flutterrtdeliveryboyapp/constant/ps_dimens.dart';
@@ -35,16 +36,17 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
   final ScrollController _scrollController = ScrollController();
 
   CompletedOrderProvider? _orderHistoryProvider;
-
   @override
   void initState() {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _orderHistoryProvider!.nextCompletedOrderList(
+        // Reached the bottom of the list
+          _orderHistoryProvider!.nextCompletedOrderList(
             completedOrderListHolder!.toMap(),
-            TransactionParameterHolder().getCompletedOrderParameterHolder());
-      }
+            TransactionParameterHolder().getCompletedOrderParameterHolder(),
+          );
+        }
     });
 
     super.initState();
@@ -95,88 +97,60 @@ class _OrderHistoryListViewState extends State<OrderHistoryListView>
           CompletedOrderProvider provider, Widget? child) {
         if (provider.completedTransactionList.data != null) {
           if (provider.completedTransactionList.data!.isNotEmpty) {
-            DateTime? lastProcessedDay;
             return Container (
               margin: const EdgeInsets.only(left: 16,right: 16),
                 child: Column(
                   children: <Widget>[
-                    //const PsAdMobBannerWidget(admobSize: AdSize.banner),
                     Expanded(
                       child: Stack(
                         children: <Widget>[
                           RefreshIndicator(
-                            child: CustomScrollView(
+                            child: ListView.builder(
                               controller: _scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              slivers: <Widget>[
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                        (BuildContext context, int index) {
-                                      final int count =
-                                          provider.completedTransactionList.data!.length;
-                                      final TransactionHeader transaction =
-                                      provider.completedTransactionList.data![index];
+                              itemCount: provider.completedTransactionList.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final int count = provider.completedTransactionList.data!.length;
+                                final TransactionHeader transaction = provider.completedTransactionList.data![index];
+                                bool? isDayChanged;
+                                if (index == 0) {
+                                  isDayChanged = true;
+                                } else {
+                                  final DateTime currentTransactionDate = DateTime.parse(provider.completedTransactionList.data![index].updatedDate!);
+                                  final DateTime previousTransactionDate = DateTime.parse(provider.completedTransactionList.data![index - 1].updatedDate!);
 
-                                      // Get the day from the transaction
-                                      final DateTime transactionDay = DateTime.parse(transaction.updatedDate!);
+                                  isDayChanged = currentTransactionDate.day != previousTransactionDate.day ||
+                                      currentTransactionDate.month != previousTransactionDate.month ||
+                                      currentTransactionDate.year != previousTransactionDate.year;
+                                }
 
-                                      // Check if the day has changed since the last processed transaction
-                                      final bool isDayChanged = lastProcessedDay == null ||
-                                          lastProcessedDay!.day != transactionDay.day ||
-                                          lastProcessedDay!.month != transactionDay.month ||
-                                          lastProcessedDay!.year != transactionDay.year;
-
-                                      // Update lastProcessedDay with the current transaction day
-                                      lastProcessedDay = transactionDay;
-
-                                      // Return a widget based on whether the day has changed
-                                      return Column(
-                                        children: <Widget>[
-                                          if (isDayChanged)
-                                            Container(
-
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20.0),
-                                                color: PsColors.mainColor,
-                                              ),
-                                              child: Text(
-                                                DateFormat('dd-MM-yyyy').format(transactionDay),
-                                                style: const TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          DashboardOrderListItem(
-                                            scaffoldKey: widget.scaffoldKey,
-                                            animationController: widget.animationController,
-                                            animation: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                              CurvedAnimation(
-                                                parent: widget.animationController,
-                                                curve: Interval(
-                                                    (1 / count) * index, 1.0,
-                                                    curve: Curves.fastOutSlowIn),
-                                              ),
-                                            ),
-                                            transaction: transaction,
-                                            onTap: () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                RoutePaths.transactionDetail,
-                                                arguments: transaction,
-                                              );
-                                            },
+                                return Column(
+                                  children: <Widget>[
+                                    DashboardOrderListItem(
+                                      showDateBanner: isDayChanged!,
+                                      scaffoldKey: widget.scaffoldKey,
+                                      animationController: widget.animationController,
+                                      animation: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                        CurvedAnimation(
+                                          parent: widget.animationController,
+                                          curve: Interval(
+                                            (1 / count) * index, 1.0,
+                                            curve: Curves.fastOutSlowIn,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                    childCount: provider.completedTransactionList.data!.length,
-                                  ),
-                                ),
-                              ],
+                                        ),
+                                      ),
+                                      transaction: transaction,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          RoutePaths.transactionDetail,
+                                          arguments: transaction,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                             onRefresh: () {
                               return provider.resetCompletedOrderList(

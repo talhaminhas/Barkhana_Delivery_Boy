@@ -433,6 +433,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                 borderRadius: const BorderRadius.all(Radius.circular(25)),
                               ),
                               child: Text(
+                                transactionDetail?.transactionStatus?.ordering == '2' ? 'Upcoming Order' :
                                 transactionDetail?.transactionStatus?.title
                                 ?? '-',
                                 textAlign: TextAlign.center,
@@ -447,8 +448,8 @@ class _OrderItemListViewState extends State<OrderItemListView>
                         ),
                       ),
                       PSProgressIndicator(provider.transactionDetailList.status),
-                      if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '0') != 0
-                      && int.parse(transactionDetail?.transactionStatus?.ordering ?? '5') != 5)
+                      if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '3') == 3
+                      || int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
                       Positioned(
                           bottom: 20,right: 0,left: 0,
                           child: Container(
@@ -479,7 +480,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                   {
                                     await Navigator.pushNamed(context, RoutePaths.messagePage,
                                         arguments: 'Starting Delivery');
-                                    launchGoogleMaps(_latlng!);
+                                    //launchGoogleMaps(_latlng!);
                                   }
                                   else
                                     await Navigator.pushNamed(context, RoutePaths.messagePage,
