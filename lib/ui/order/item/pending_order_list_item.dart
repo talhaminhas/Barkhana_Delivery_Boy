@@ -354,6 +354,7 @@ class _TransactionTextWidget extends StatelessWidget {
                               )
                           )
                         ),
+
                         if (transaction.transactionStatus!.ordering == '2')
                         /*Container(
                           //margin: const EdgeInsets.only(right: 10),
