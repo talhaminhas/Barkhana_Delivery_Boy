@@ -399,7 +399,7 @@ class Utils {
       Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          border: Border.all(color: PsColors.mainColor),
+          border: Border.all(color: PsColors.white),
           borderRadius: BorderRadius.circular(5.0),
           color: PsColors.mainColor, // Background color
         ),
@@ -417,7 +417,7 @@ class Utils {
       context: context,
       animation: StyledToastAnimation.slideFromTop,
       reverseAnimation: StyledToastAnimation.slideFromTop,
-      position: const StyledToastPosition(align: Alignment.topCenter, offset: 50.0),
+      position: const StyledToastPosition(align: Alignment.topCenter, offset: 0.0),
       animDuration: const Duration(seconds: 1),
       duration: const Duration(seconds: 4),
       curve: Curves.elasticOut,
