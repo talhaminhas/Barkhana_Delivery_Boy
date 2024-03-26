@@ -21,8 +21,8 @@ class PsConfig {
 
   static const String ps_core_url =
   //'https://5ccc-81-150-185-121.ngrok-free.app/Barkhana';
-  'http://62.30.84.56:88/Barkhana';
-  //'http://192.168.1.176:8080/Barkhana';
+  //'http://62.30.84.56:88/Barkhana';
+  'http://192.168.1.176:8080/Barkhana';
 
   static const String ps_app_url = ps_core_url + '/index.php/';
 

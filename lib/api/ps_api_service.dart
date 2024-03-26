@@ -380,4 +380,12 @@ class PsApiService extends PsApi {
     const String url = '${PsUrl.ps_delete_user_url}';
     return await postData<ApiStatus, ApiStatus>(ApiStatus(), url, jsonMap);
   }
+  ///
+  /// update location
+  ///
+  Future<PsResource<ApiStatus>> postDeliveryBoyLocation(
+      Map<dynamic, dynamic> jsonMap) async {
+    const String url = '${PsUrl.ps_update_location_url}';
+    return await postData<ApiStatus, ApiStatus>(ApiStatus(), url, jsonMap);
+  }
 }

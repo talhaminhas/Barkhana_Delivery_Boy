@@ -144,7 +144,7 @@ abstract class PsApi {
 
   Future<PsResource<R>> postData<T extends PsObject<dynamic>, R>(
       T obj, String url, Map<dynamic, dynamic> jsonMap) async {
-    print('postData');
+    //print('postData');
 
     if (PSApp.apiTokenRefresher.isExpired
         && url != PsUrl.ps_api_request_token_post_url
@@ -152,8 +152,8 @@ abstract class PsApi {
 
       await PSApp.apiTokenRefresher.updateToken();
     }
-    print(jsonMap);
-    print(Uri.parse('${PsConfig.ps_app_url}$url'));
+    //print(jsonMap);
+    //print(Uri.parse('${PsConfig.ps_app_url}$url'));
     final Client client = http.Client();
     try {
       final Map<String, String> headers = <String, String>{

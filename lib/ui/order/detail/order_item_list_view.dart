@@ -98,8 +98,8 @@ class _OrderItemListViewState extends State<OrderItemListView>
 
   dynamic _initCurrentLocation() {
     Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.medium,
-            forceAndroidLocationManager: !true)
+        desiredAccuracy: LocationAccuracy.medium,
+        forceAndroidLocationManager: !true)
         .then((Position position) {
       if (mounted) {
         setState(() {
@@ -153,7 +153,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
   }
   dynamic updateTransactionDetail(TransactionDetail transactionDetail) {
 
-      transactionDetail = transactionDetail;
+    transactionDetail = transactionDetail;
   }
 
   dynamic data;
@@ -173,7 +173,7 @@ class _OrderItemListViewState extends State<OrderItemListView>
     }
     Future<bool> _requestPop() {
       animationController!.reverse().then<dynamic>(
-        (void data) {
+            (void data) {
           if (!mounted) {
             return Future<bool>.value(false);
           }
@@ -201,8 +201,8 @@ class _OrderItemListViewState extends State<OrderItemListView>
               lazy: false,
               create: (BuildContext context) {
                 final TransactionDetailProvider provider =
-                    TransactionDetailProvider(
-                        repo: repo1!, psValueHolder: valueHolder);
+                TransactionDetailProvider(
+                    repo: repo1!, psValueHolder: valueHolder);
                 provider.loadTransactionDetailList(transaction!);
                 _transactionDetailProvider = provider;
                 return provider;
@@ -250,113 +250,113 @@ class _OrderItemListViewState extends State<OrderItemListView>
           ],
           child: Consumer<TransactionDetailProvider>(builder:
               (BuildContext context, TransactionDetailProvider provider,
-                  Widget? child) {
+              Widget? child) {
             if(provider.transactionDetailList.data != null &&
-            provider.transactionDetailList.data!.isNotEmpty)
+                provider.transactionDetailList.data!.isNotEmpty)
             {
               transactionDetail = provider.transactionDetailList.data![0];
             }
             return Scaffold(
-              key: scaffoldKey,
-              appBar: AppBar(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarIconBrightness: Utils.getBrightnessForAppBar(context),
-                ), 
-                iconTheme: Theme.of(context)
-                    .iconTheme
-                    .copyWith(color: PsColors.mainColorWithWhite),
-                title: Text(
-                  Utils.getString(context, 'order_detail__title'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: PsColors.mainColorWithWhite),
+                key: scaffoldKey,
+                appBar: AppBar(
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarIconBrightness: Utils.getBrightnessForAppBar(context),
+                  ),
+                  iconTheme: Theme.of(context)
+                      .iconTheme
+                      .copyWith(color: PsColors.mainColorWithWhite),
+                  title: Text(
+                    Utils.getString(context, 'order_detail__title'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: PsColors.mainColorWithWhite),
+                  ),
+                  elevation: 0,
                 ),
-                elevation: 0,
-              ),
-              body: Column(
-                  children: <Widget>[
-                    Expanded(child:
-                    Stack(children: <Widget>[
-                      RefreshIndicator(
-                        key: orderDetailRefreshKey,
-                        child: CustomScrollView(
-                            controller: _scrollController,
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            slivers: <Widget>[
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 0, left: 0, bottom: 10),
-                                  child: ClipRRect(
-                                    child: Container(
-                                      height: 250,
-                                      child: FlutterMap(
-                                        mapController: mapController,
-                                        options: MapOptions(
-                                          center: _latlng,
-                                          zoom: zoom,
-                                        ),
-                                        children: <Widget>[
-                                          TileLayer(
-                                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                            //tileProvider: CachedNetworkTileProvider(),
+                body: Column(
+                    children: <Widget>[
+                      Expanded(child:
+                      Stack(children: <Widget>[
+                        RefreshIndicator(
+                          key: orderDetailRefreshKey,
+                          child: CustomScrollView(
+                              controller: _scrollController,
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              slivers: <Widget>[
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 0, left: 0, bottom: 10),
+                                    child: ClipRRect(
+                                      child: Container(
+                                        height: 250,
+                                        child: FlutterMap(
+                                          mapController: mapController,
+                                          options: MapOptions(
+                                            center: _latlng,
+                                            zoom: zoom,
                                           ),
-                                          MarkerLayer(markers: <Marker>[
-                                            Marker(
-                                              width: 80.0,
-                                              height: 80.0,
-                                              point: _latlng!,
-                                              builder: (BuildContext context)
-                                              {
-                                                return Container(
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.location_on,
-                                                      color: PsColors.redColor,
+                                          children: <Widget>[
+                                            TileLayer(
+                                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                              //tileProvider: CachedNetworkTileProvider(),
+                                            ),
+                                            MarkerLayer(markers: <Marker>[
+                                              Marker(
+                                                width: 80.0,
+                                                height: 80.0,
+                                                point: _latlng!,
+                                                builder: (BuildContext context)
+                                                {
+                                                  return Container(
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        Icons.location_on,
+                                                        color: PsColors.redColor,
+                                                      ),
+                                                      iconSize: 45,
+                                                      onPressed: () {
+                                                        launchGoogleMaps(_latlng!);
+                                                      },
                                                     ),
-                                                    iconSize: 45,
-                                                    onPressed: () {
-                                                      launchGoogleMaps(_latlng!);
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            )
-                                          ])
-                                        ],
+                                                  );
+                                                },
+                                              )
+                                            ])
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  color: PsColors.backgroundColor,
-                                  margin: const EdgeInsets.only(
-                                      top: PsDimens.space8,
-                                      bottom: PsDimens.space16,
-                                      left: PsDimens.space16,
-                                      right: PsDimens.space16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      _OrderTextWidget(
-                                          transaction: transaction!,
-                                          transactionStatusProvider:
-                                          transactionStatusProvider!,
-                                          transactionHeaderProvider:
-                                          transactionHeaderProvider!,
-                                          updateTransactionHeader:
-                                          updateTransactionHeader,
-                                          transactionDetailProvider: provider!,
-                                          shopInfoProvider: shopInfoProvider!),
-                                    ],
+                                SliverToBoxAdapter(
+                                  child: Container(
+                                    color: PsColors.backgroundColor,
+                                    margin: const EdgeInsets.only(
+                                        top: PsDimens.space8,
+                                        bottom: PsDimens.space16,
+                                        left: PsDimens.space16,
+                                        right: PsDimens.space16),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        _OrderTextWidget(
+                                            transaction: transaction!,
+                                            transactionStatusProvider:
+                                            transactionStatusProvider!,
+                                            transactionHeaderProvider:
+                                            transactionHeaderProvider!,
+                                            updateTransactionHeader:
+                                            updateTransactionHeader,
+                                            transactionDetailProvider: provider!,
+                                            shopInfoProvider: shopInfoProvider!),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              /*SliverToBoxAdapter(
+                                /*SliverToBoxAdapter(
                             child: Container(
                                 height: 500,
                                 width: double.infinity,
@@ -368,159 +368,159 @@ class _OrderItemListViewState extends State<OrderItemListView>
                                       double.parse(
                                           widget.intentTransaction.transLng!)),
                                 ))),*/
-                              SliverToBoxAdapter(
-                                child: _NoOrderWidget(
-                                    transaction: transaction!,
-                                    valueHolder: valueHolder!,
-                                    scaffoldKey: scaffoldKey),
-                              ),
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                    if (provider.transactionDetailList.data != null ||
-                                        provider
-                                            .transactionDetailList.data!.isNotEmpty) {
-                                      final int count =
-                                          provider.transactionDetailList.data!.length;
-                                      return OrderItemView(
-                                        animationController: animationController!,
-                                        animation: Tween<double>(begin: 0.0, end: 1.0)
-                                            .animate(
-                                          CurvedAnimation(
-                                            parent: animationController!,
-                                            curve: Interval((1 / count) * index, 1.0,
-                                                curve: Curves.fastOutSlowIn),
+                                SliverToBoxAdapter(
+                                  child: _NoOrderWidget(
+                                      transaction: transaction!,
+                                      valueHolder: valueHolder!,
+                                      scaffoldKey: scaffoldKey),
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                      if (provider.transactionDetailList.data != null ||
+                                          provider
+                                              .transactionDetailList.data!.isNotEmpty) {
+                                        final int count =
+                                            provider.transactionDetailList.data!.length;
+                                        return OrderItemView(
+                                          animationController: animationController!,
+                                          animation: Tween<double>(begin: 0.0, end: 1.0)
+                                              .animate(
+                                            CurvedAnimation(
+                                              parent: animationController!,
+                                              curve: Interval((1 / count) * index, 1.0,
+                                                  curve: Curves.fastOutSlowIn),
+                                            ),
                                           ),
-                                        ),
-                                        transaction: provider
-                                            .transactionDetailList.data![index],
-                                      );
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  childCount:
-                                  provider.transactionDetailList.data!.length,
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                  child:
-                                  Container(
-                                    height: 100,
-                                  )
-                              ),
-                            ]),
-                        onRefresh: () {
-                          setState(() {
-
-                          });
-                          return provider.resetTransactionDetailList(transaction!);
-                        },
-                      ),
-                      Positioned(
-                        top: 10,
-                        left: 0,
-                        right: 0,
-                        child:Align(
-                            alignment: Alignment.center,
-                            child:
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Utils.hexToColor(
-                                    transactionDetail?.transactionStatus?.colorValue ?? ''),
-                                //.withOpacity(0.6),
-                                borderRadius: const BorderRadius.all(Radius.circular(25)),
-                              ),
-                              child: Text(
-                                transactionDetail?.transactionStatus?.ordering == '2' ? 'Upcoming Order' :
-                                transactionDetail?.transactionStatus?.title
-                                ?? '-',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight:
-                                    FontWeight.bold,
-                                    color: Colors.white
-                                ),
-                              ),
-                            )
-                        ),
-                      ),
-                      PSProgressIndicator(provider.transactionDetailList.status),
-                      if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '3') == 3
-                      || int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
-                      Positioned(
-                          bottom: 20,right: 0,left: 0,
-                          child: Container(
-                              child:SliderButton(
-                                width: double.infinity,
-                                radius: 0,
-                                action: () async{
-                                  //change status to picked up
-                                  String updatedStatusOrdering = '4';
-                                  //change status to delivered
-                                  if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
-                                    updatedStatusOrdering = '5';
-                                  for (TransactionStatus transactionStatus in transactionStatusProvider!
-                                      .transactionStatusList.data!) {
-                                        if (transactionStatus.ordering! == updatedStatusOrdering) {
-                                          final TransStatusUpdateHolder paymentStatusHolder =
-                                          TransStatusUpdateHolder(
-                                            transStatusId: transactionStatus.id,
-                                            transactionsHeaderId: transaction?.id,
-                                          );
-                                          transactionHeaderProvider
-                                              ?.postTransactionStatusUpdate(
-                                              paymentStatusHolder.toMap());
-                                          break;
-                                        }
-                                  }
-                                  if (updatedStatusOrdering == '4')
-                                  {
-                                    await Navigator.pushNamed(context, RoutePaths.messagePage,
-                                        arguments: 'Starting Delivery');
-                                    //launchGoogleMaps(_latlng!);
-                                  }
-                                  else
-                                    await Navigator.pushNamed(context, RoutePaths.messagePage,
-                                        arguments: 'Order Delivered');
-                                  _requestPop();
-                                  return true;
-                                },
-                                label: Align(
-                                  alignment: const Alignment(0.3, 0.0),
-                                  child:Text(
-                                    int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') < 4 ?
-                                    'Slide To Start Delivery' :
-                                    'Slide To Confirm Delivered',
-                                    style: const TextStyle(
-                                      color: Color(0xff4a4a4a),
-                                      fontWeight: FontWeight.bold, // Set fontWeight to bold
-                                      fontSize: 18,
-                                    ),
+                                          transaction: provider
+                                              .transactionDetailList.data![index],
+                                        );
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    childCount:
+                                    provider.transactionDetailList.data!.length,
                                   ),
                                 ),
+                                SliverToBoxAdapter(
+                                    child:
+                                    Container(
+                                      height: 100,
+                                    )
+                                ),
+                              ]),
+                          onRefresh: () {
+                            setState(() {
 
-                                icon: Center(
-                                    child: Icon(
-                                      Icons.arrow_forward_rounded,
-                                      color: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
-                                      size: 30.0,
-                                    )),
-
-                                //width: double.infinity,
-                                //radius: 20,
-                                buttonColor: PsColors.mainColor,
-                                backgroundColor: PsColors.mainColor.withOpacity(0.6),
-                                highlightedColor: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
-                                baseColor: PsColors.white,
+                            });
+                            return provider.resetTransactionDetailList(transaction!);
+                          },
+                        ),
+                        Positioned(
+                          top: 10,
+                          left: 0,
+                          right: 0,
+                          child:Align(
+                              alignment: Alignment.center,
+                              child:
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Utils.hexToColor(
+                                      transactionDetail?.transactionStatus?.colorValue ?? ''),
+                                  //.withOpacity(0.6),
+                                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                                ),
+                                child: Text(
+                                  transactionDetail?.transactionStatus?.ordering == '2' ? 'Upcoming Order' :
+                                  transactionDetail?.transactionStatus?.title
+                                      ?? '-',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight:
+                                      FontWeight.bold,
+                                      color: Colors.white
+                                  ),
+                                ),
                               )
                           ),
+                        ),
+                        PSProgressIndicator(provider.transactionDetailList.status),
+                        if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '3') == 3
+                            || int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
+                          Positioned(
+                            bottom: 20,right: 0,left: 0,
+                            child: Container(
+                                child:SliderButton(
+                                  width: double.infinity,
+                                  radius: 0,
+                                  action: () async{
+                                    //change status to picked up
+                                    String updatedStatusOrdering = '4';
+                                    //change status to delivered
+                                    if(int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') == 4)
+                                      updatedStatusOrdering = '5';
+                                    for (TransactionStatus transactionStatus in transactionStatusProvider!
+                                        .transactionStatusList.data!) {
+                                      if (transactionStatus.ordering! == updatedStatusOrdering) {
+                                        final TransStatusUpdateHolder paymentStatusHolder =
+                                        TransStatusUpdateHolder(
+                                          transStatusId: transactionStatus.id,
+                                          transactionsHeaderId: transaction?.id,
+                                        );
+                                        transactionHeaderProvider
+                                            ?.postTransactionStatusUpdate(
+                                            paymentStatusHolder.toMap());
+                                        break;
+                                      }
+                                    }
+                                    if (updatedStatusOrdering == '4')
+                                    {
+                                      await Navigator.pushNamed(context, RoutePaths.messagePage,
+                                          arguments: 'Starting Delivery');
+                                      //launchGoogleMaps(_latlng!);
+                                    }
+                                    else
+                                      await Navigator.pushNamed(context, RoutePaths.messagePage,
+                                          arguments: 'Order Delivered');
+                                    _requestPop();
+                                    return true;
+                                  },
+                                  label: Align(
+                                    alignment: const Alignment(0.3, 0.0),
+                                    child:Text(
+                                      int.parse(transactionDetail?.transactionStatus?.ordering ?? '4') < 4 ?
+                                      'Slide To Start Delivery' :
+                                      'Slide To Confirm Delivered',
+                                      style: const TextStyle(
+                                        color: Color(0xff4a4a4a),
+                                        fontWeight: FontWeight.bold, // Set fontWeight to bold
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+
+                                  icon: Center(
+                                      child: Icon(
+                                        Icons.arrow_forward_rounded,
+                                        color: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
+                                        size: 30.0,
+                                      )),
+
+                                  //width: double.infinity,
+                                  //radius: 20,
+                                  buttonColor: PsColors.mainColor,
+                                  backgroundColor: PsColors.mainColor.withOpacity(0.6),
+                                  highlightedColor: Utils.hexToColor(transactionDetail?.transactionStatus?.colorValue ?? ''),
+                                  baseColor: PsColors.white,
+                                )
+                            ),
+                          ),
+                      ]),
                       ),
-                    ]),
-                    ),
-                    /*Container(
+                      /*Container(
                       //margin: EdgeInsets.all(20),
                       *//*decoration: BoxDecoration(
                         color: PsColors.mainColor,  // Set your desired background color here
@@ -568,8 +568,8 @@ class _OrderItemListViewState extends State<OrderItemListView>
 
 
 
-                  ]
-              )
+                    ]
+                )
 
             );
           }),
@@ -601,7 +601,7 @@ class __ShopInfoWidgetState extends State<_ShopInfoWidget> {
     return Consumer<ShopInfoProvider>(builder:
         (BuildContext context, ShopInfoProvider provider, Widget? child) {
       if (
-          provider.shopInfo.data != null) {
+      provider.shopInfo.data != null) {
         return Column(
           children: <Widget>[
             Padding(
@@ -629,7 +629,7 @@ Widget whiteCartWidget(BuildContext context, String title, String text) {
         decoration: BoxDecoration(
           color: PsColors.whiteColorWithBlack,
           borderRadius:
-              const BorderRadius.all(Radius.circular(PsDimens.space8)),
+          const BorderRadius.all(Radius.circular(PsDimens.space8)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -655,12 +655,12 @@ Widget whiteCartWidget(BuildContext context, String title, String text) {
 class _OrderTextWidget extends StatefulWidget {
   const _OrderTextWidget(
       {Key? key,
-      required this.transaction,
-      required this.transactionStatusProvider,
-      required this.transactionHeaderProvider,
-      required this.updateTransactionHeader,
+        required this.transaction,
+        required this.transactionStatusProvider,
+        required this.transactionHeaderProvider,
+        required this.updateTransactionHeader,
         required this.transactionDetailProvider,
-      required this.shopInfoProvider})
+        required this.shopInfoProvider})
       : super(key: key);
 
   final TransactionHeader transaction;
@@ -737,7 +737,7 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                     widget.transaction.transactionStatus!.colorValue!),
                 border: Border.all(color: PsColors.mainLightShadowColor),
                 borderRadius:
-                    const BorderRadius.all(Radius.circular(PsDimens.space8))),
+                const BorderRadius.all(Radius.circular(PsDimens.space8))),
             child: Text(
               widget.transaction.transactionStatus!.title ?? '-',
               style: Theme.of(context)
@@ -761,15 +761,15 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                     ),
                     content: SetupAlertDialoadContainer(
                         transactionStatusProvider:
-                            widget.transactionStatusProvider,
+                        widget.transactionStatusProvider,
                         transactionHeaderProvider:
-                            widget.transactionHeaderProvider,
+                        widget.transactionHeaderProvider,
                         animationController: animationController,
                         headerId: widget.transaction.id!,
                         tranOrdering:
-                            widget.transaction.transactionStatus!.ordering!,
+                        widget.transaction.transactionStatus!.ordering!,
                         updateTransactionHeader:
-                            widget.updateTransactionHeader),
+                        widget.updateTransactionHeader),
                   );
                 });
           },
@@ -779,179 +779,179 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
 
     if ( widget.transaction.transCode != null)
       return
-          Container(
-            padding: _paddingEdgeInsetWidget,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: PsColors.mainColor, // Border color
-                width: 2.0,          // Border width
-              ),
-              borderRadius: BorderRadius.circular(10.0), // Rounded corners
+        Container(
+          padding: _paddingEdgeInsetWidget,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: PsColors.mainColor, // Border color
+              width: 2.0,          // Border width
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        children: <Widget>[
-                          const SizedBox(
-                            width: PsDimens.space8,
-                          ),
-                          Icon(
-                            Icons.perm_identity_outlined,
-                            color: Theme.of(context).iconTheme.color,
-                          ),
-                          const SizedBox(
-                            width: PsDimens.space8,
-                          ),
-                          Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                      'Customer Details',
-                                      textAlign: TextAlign.left,
-                                      style: Theme.of(context).textTheme.titleMedium),
-                                  const SizedBox(
-                                    height: PsDimens.space4,
-                                  ),
-                                  Text(
-                                    widget.transaction.contactName!,
+            borderRadius: BorderRadius.circular(10.0), // Rounded corners
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        const SizedBox(
+                          width: PsDimens.space8,
+                        ),
+                        Icon(
+                          Icons.perm_identity_outlined,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        const SizedBox(
+                          width: PsDimens.space8,
+                        ),
+                        Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                    'Customer Details',
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.normal),
-                                  ),
-                                  const SizedBox(
-                                    height: PsDimens.space4,
-                                  ),
-                                  Text(
-                                    widget.transaction.contactPhone!,
-                                    textAlign: TextAlign.left,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.normal),
-                                  ),
-                                ],
-                              )
+                                    style: Theme.of(context).textTheme.titleMedium),
+                                const SizedBox(
+                                  height: PsDimens.space4,
+                                ),
+                                Text(
+                                  widget.transaction.contactName!,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(fontWeight: FontWeight.normal),
+                                ),
+                                const SizedBox(
+                                  height: PsDimens.space4,
+                                ),
+                                Text(
+                                  widget.transaction.contactPhone!,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(fontWeight: FontWeight.normal),
+                                ),
+                              ],
+                            )
+                        ),
+                        Container(
+                          width: PsDimens.space60,
+                          height: PsDimens.space60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(width: 2.0, color: PsColors.mainColor),
                           ),
-                          Container(
-                            width: PsDimens.space60,
-                            height: PsDimens.space60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(width: 2.0, color: PsColors.mainColor),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6.0),
-                              child: PsNetworkCircleImage(
-                                photoKey: '',
-                                imagePath:
-                                widget.transactionDetailProvider.transactionDetailList.data!.isNotEmpty?
-                                widget.transactionDetailProvider.transactionDetailList.data![0].customerPhoto :
-                                    ''
-                                ,
-                                boxfit: BoxFit.cover,
-                                onTap: () {},
-                              ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6.0),
+                            child: PsNetworkCircleImage(
+                              photoKey: '',
+                              imagePath:
+                              widget.transactionDetailProvider.transactionDetailList.data!.isNotEmpty?
+                              widget.transactionDetailProvider.transactionDetailList.data![0].customerPhoto :
+                              ''
+                              ,
+                              boxfit: BoxFit.cover,
+                              onTap: () {},
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                const Divider(
-                  height: 1,
-                  thickness: 1,
-                ),
-                _TransactionNoTextWidget(
-                  title:
-                  'Address :',
-                  transationInfoText: widget.transaction.contactAddress!,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // You can also use MainAxisAlignment.spaceAround
-                  children: <Widget> [
-                    Expanded (
-                      //padding: const EdgeInsets.only(bottom: 10),
-                        child:Container(
-                          height: 60,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          //width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              final String url = 'https://www.google.com/maps/dir/?api=1&destination='
-                                  '${widget.transaction.transLat},${widget.transaction.transLng}';
-                              if (await canLaunch(url)) {
-                                await launch(url);
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Divider(
+                height: 1,
+                thickness: 1,
+              ),
+              _TransactionNoTextWidget(
+                title:
+                'Address :',
+                transationInfoText: widget.transaction.contactAddress!,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // You can also use MainAxisAlignment.spaceAround
+                children: <Widget> [
+                  Expanded (
+                    //padding: const EdgeInsets.only(bottom: 10),
+                      child:Container(
+                        height: 60,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        //width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final String url = 'https://www.google.com/maps/dir/?api=1&destination='
+                                '${widget.transaction.transLat},${widget.transaction.transLng}';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              print('Could not launch $url');
+                            }
+                          },
+
+                          style: ElevatedButton.styleFrom(
+                            primary: PsColors.mainColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
+                            ),
+                          ),
+                          child: const Text(
+                            'Get Directions',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      )
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Padding (
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child:Container(
+                        height: 60,
+                        //width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {//
+                              if (await canLaunch('tel://${widget.transaction.contactPhone}')) {
+                                await launch('tel://${widget.transaction.contactPhone}');
                               } else {
-                                print('Could not launch $url');
+                                throw 'Could not launch Phone Number';
                               }
-                            },
+                            } catch (e) {
+                              print('Error: $e');
+                              // Handle the error appropriately (e.g., show a message to the user)
+                            }
+                          },
 
-                            style: ElevatedButton.styleFrom(
-                              primary: PsColors.mainColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
-                              ),
-                            ),
-                            child: const Text(
-                              'Get Directions',
-                              style: TextStyle(fontSize: 18),
+                          style: ElevatedButton.styleFrom(
+                            primary: PsColors.mainColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
                             ),
                           ),
-                        )
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Padding (
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child:Container(
-                          height: 60,
-                          //width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              try {//
-                                if (await canLaunch('tel://${widget.transaction.contactPhone}')) {
-                                  await launch('tel://${widget.transaction.contactPhone}');
-                                } else {
-                                  throw 'Could not launch Phone Number';
-                                }
-                              } catch (e) {
-                                print('Error: $e');
-                                // Handle the error appropriately (e.g., show a message to the user)
-                              }
-                            },
-
-                            style: ElevatedButton.styleFrom(
-                              primary: PsColors.mainColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)), // Set your desired border radius
-                              ),
-                            ),
-                            child: const Icon(Icons.phone_in_talk, size: 30,),
-                            //),
-                          ),
-                        )
-                    ),
-                  ],
-                ),
-                /*Padding(
+                          child: const Icon(Icons.phone_in_talk, size: 30,),
+                          //),
+                        ),
+                      )
+                  ),
+                ],
+              ),
+              /*Padding(
                   padding: const EdgeInsets.only(top: PsDimens.space8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -984,9 +984,9 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
                     ],
                   ),
                 )*/
-              ],
-            ),
-          );
+            ],
+          ),
+        );
     else
       return Container();
   }
@@ -995,9 +995,9 @@ class __OrderTextWidgetState extends State<_OrderTextWidget> {
 class _ImageAndTextWidget extends StatefulWidget {
   const _ImageAndTextWidget(
       {Key? key,
-      required this.data,
-      required this.shopInfoProvider,
-      required this.shopId})
+        required this.data,
+        required this.shopInfoProvider,
+        required this.shopId})
       : super(key: key);
 
   final ShopInfo? data;
@@ -1104,8 +1104,8 @@ class _SetupAlertDialoadContainerState
   @override
   Widget build(BuildContext context) {
     if (
-       // widget.transactionStatusProvider.transactionStatusList == null &&
-        widget.transactionStatusProvider.transactionStatusList.data!.isEmpty) {
+    // widget.transactionStatusProvider.transactionStatusList == null &&
+    widget.transactionStatusProvider.transactionStatusList.data!.isEmpty) {
       return Container();
     } else {
       return Container(
@@ -1121,7 +1121,7 @@ class _SetupAlertDialoadContainerState
                   .transactionStatusProvider.transactionStatusList.data![index],
               onTap: () async {
                 if (int.parse(widget.transactionStatusProvider
-                        .transactionStatusList.data![index].ordering!) <
+                    .transactionStatusList.data![index].ordering!) <
                     int.parse(widget.tranOrdering)) {
                   showDialog<dynamic>(
                       context: context,
@@ -1133,16 +1133,16 @@ class _SetupAlertDialoadContainerState
                         );
                       });
                 } else if (int.parse(widget.transactionStatusProvider
-                        .transactionStatusList.data![index].ordering!) ==
+                    .transactionStatusList.data![index].ordering!) ==
                     int.parse(widget.tranOrdering)) {
                   Navigator.of(context).pop();
                 } else {
                   await PsProgressDialog.showDialog(context);
                   final TransStatusUpdateHolder paymentStatusHolder =
-                      TransStatusUpdateHolder(
-                          transStatusId: widget.transactionStatusProvider
-                              .transactionStatusList.data![index].id,
-                          transactionsHeaderId: widget.headerId);
+                  TransStatusUpdateHolder(
+                      transStatusId: widget.transactionStatusProvider
+                          .transactionStatusList.data![index].id,
+                      transactionsHeaderId: widget.headerId);
                   final PsResource<TransactionHeader> _apiStatus = await widget
                       .transactionHeaderProvider
                       .postTransactionStatusUpdate(paymentStatusHolder.toMap());
@@ -1390,7 +1390,7 @@ class ImageAndTextWidget extends StatelessWidget {
         await shopProvider.replaceShop(data.id!, data.name!);
         Navigator.pushNamed(context, RoutePaths.shopDashboard,
             arguments:
-                ShopDataIntentHolder(shopId: data.id!, shopName: data.name!));
+            ShopDataIntentHolder(shopId: data.id!, shopName: data.name!));
       },
     );
 
@@ -1404,7 +1404,7 @@ class ImageAndTextWidget extends StatelessWidget {
           await shopProvider.replaceShop(data.id!, data.name!);
           Navigator.pushNamed(context, RoutePaths.shopDashboard,
               arguments:
-                  ShopDataIntentHolder(shopId: data.id!, shopName: data.name!));
+              ShopDataIntentHolder(shopId: data.id!, shopName: data.name!));
         },
         child: Row(
           children: <Widget>[

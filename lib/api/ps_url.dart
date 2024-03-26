@@ -185,4 +185,6 @@ class PsUrl {
   
   static const String ps_delete_user_url =
       'rest/users/deliboy_delete/api_key/${PsConfig.ps_api_key}';
+  static const String ps_update_location_url =
+      'rest/users/deliboy_location_update/api_key/${PsConfig.ps_api_key}';
 }

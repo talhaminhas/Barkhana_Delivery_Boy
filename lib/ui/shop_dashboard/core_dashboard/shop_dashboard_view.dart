@@ -1,3 +1,6 @@
+import 'dart:async';
+//import 'dart:html';
+
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +35,17 @@ import 'package:flutterrtdeliveryboyapp/ui/user/reject_user/reject_user_view.dar
 import 'package:flutterrtdeliveryboyapp/ui/user/verify/verify_email_view.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/ps_value_holder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../../api/common/ps_resource.dart';
+import '../../../api/ps_api_service.dart';
+import '../../../viewobject/api_status.dart';
 import '../../../viewobject/user.dart';
+import '../../common/ps_toast.dart';
 import 'core_appbar_dashboard_view.dart';
 import 'core_drawer_dashboard_view.dart';
 
@@ -63,6 +72,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
     Utils.fcmConfigure(context, _fcm);
 
     super.initState();
+
   }
 
   @override
@@ -70,7 +80,8 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
     animationController.dispose();
     super.dispose();
   }
-
+ bool isTimerRunning = false;
+ late Timer timer;
   UserRepository? userRepository;
   AppInfoRepository? appInfoRepository;
   PsValueHolder? valueHolder;
@@ -81,6 +92,61 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
   MainDashboardProvider? mainDashboardProvider;
   String? _appBarTitle;
   User? user;
+
+
+ Future<void> requestLocationPermission() async {
+   PermissionStatus permission = await Permission.location.status;
+   if (permission != PermissionStatus.granted) {
+     permission = await Permission.location.request();
+     if (permission != PermissionStatus.granted) {
+       if (await Permission.location.isPermanentlyDenied) {
+
+         openAppSettings();
+       }
+       // Handle denied permission
+       return;
+     }
+   }
+   // Permission has been granted
+ }
+ void startTimer() {
+   if(!isTimerRunning) {
+     isTimerRunning = true;
+     timer = Timer.periodic(const Duration(seconds: 15), (Timer timer) async {
+       final Position position = await Geolocator.getCurrentPosition(
+         desiredAccuracy: LocationAccuracy.high,
+       );
+       final double latitude = position.latitude;
+       final double longitude = position.longitude;
+       if (await Utils.checkInternetConnectivity()) {
+         final Map<String, dynamic> jsonMap = <String, dynamic>{};
+         jsonMap['user_id'] = valueHolder!.loginUserId!;
+         jsonMap['lat'] = latitude.toString();
+         jsonMap['lng'] = longitude.toString();
+         final PsResource<ApiStatus> apiStatus = await PsApiService()
+             .postDeliveryBoyLocation(jsonMap);
+         //print(apiStatus.data!.message!);
+       }
+       else {
+         PsToast().showToast(
+             Utils.getString(context!, 'error_dialog__no_internet'));
+       }
+     });
+   }
+ }
+
+ Future<void> getLocation() async {
+   LocationPermission permission = await Geolocator.checkPermission();
+   if (permission == LocationPermission.denied) {
+     permission = await Geolocator.requestPermission();
+     if (permission == LocationPermission.denied) {
+       requestLocationPermission();
+       return;
+     }
+   }
+   startTimer();
+ }
+
   @override
   Widget build(BuildContext context) {
     print('** Build Shop Dashboard **');
@@ -95,6 +161,7 @@ class _ShopDashboardViewState extends State<ShopDashboardView>
 
     final Animation<double> animation =
         Utils.getTweenAnimation(animationController, 1);
+    getLocation();
 
     return WillPopScope(
       onWillPop: _onWillPop,

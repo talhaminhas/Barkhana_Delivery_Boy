@@ -1,4 +1,5 @@
 import 'dart:async';
+//import 'dart:html';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -13,15 +14,20 @@ import 'package:flutterrtdeliveryboyapp/config/router.dart' as router;
 import 'package:flutterrtdeliveryboyapp/provider/common/ps_theme_provider.dart';
 import 'package:flutterrtdeliveryboyapp/provider/ps_provider_dependencies.dart';
 import 'package:flutterrtdeliveryboyapp/repository/ps_theme_repository.dart';
+import 'package:flutterrtdeliveryboyapp/ui/common/ps_toast.dart';
 import 'package:flutterrtdeliveryboyapp/ui/map/polyline_view.dart';
 import 'package:flutterrtdeliveryboyapp/utils/utils.dart';
+import 'package:flutterrtdeliveryboyapp/viewobject/api_status.dart';
 import 'package:flutterrtdeliveryboyapp/viewobject/common/language.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 //import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_manager/theme_manager.dart';
 import 'api/api_token_refresher.dart';
+import 'api/common/ps_resource.dart';
 import 'api/ps_api_service.dart';
 import 'config/ps_config.dart';
 import 'constant/ps_constants.dart';
@@ -119,6 +125,8 @@ class _PSAppState extends State<PSApp> {
     print('psapp disposed called');
     super.dispose();
   }
+
+
   Future<ThemeData> getSharePerference(
       EasyLocalization provider, dynamic data) {
     Utils.psPrint('>> get share perference');
